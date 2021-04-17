@@ -1,0 +1,2 @@
+# mem-rs
+mem-rs is a library that intends to make game hacking in rust easy so you don't need to deal with the bullshit of converting c++ types into rust types or dealing with unsafe keywords everywhere.
