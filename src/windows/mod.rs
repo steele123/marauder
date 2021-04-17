@@ -38,15 +38,13 @@ pub fn create_tool_help32_snapshot(
 
 pub fn process32_first(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe {
-        let ret = Process32First(snapshot, process_entry);
-        ret == TRUE
+        Process32First(snapshot, process_entry).into()
     }
 }
 
 pub fn process32_next(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe {
-        let ret = Process32Next(snapshot, process_entry);
-        ret == TRUE
+        Process32Next(snapshot, process_entry).into()
     }
 }
 
@@ -58,14 +56,13 @@ pub fn write_process_memory(
     number_of_bytes_written: *mut SIZE_T,
 ) -> bool {
     unsafe {
-        let ret = WriteProcessMemory(
+        WriteProcessMemory(
             process_handle,
             base_address,
             buffer,
             size,
             number_of_bytes_written,
-        );
-        ret == TRUE
+        ).into()
     }
 }
 
@@ -77,13 +74,12 @@ pub fn read_process_memory(
     number_of_bytes_written: *mut SIZE_T,
 ) -> bool {
     unsafe {
-        let ret = ReadProcessMemory(
+        ReadProcessMemory(
             process_handle,
             base_address,
             buffer,
             size,
             number_of_bytes_written,
-        );
-        ret == TRUE
+        ).into()
     }
 }
