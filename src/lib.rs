@@ -9,3 +9,6 @@ pub mod internal;
 
 #[cfg(target_os = "windows")]
 pub mod external;
+
+#[cfg(target_os = "windows")]
+pub mod windows;
