@@ -10,8 +10,7 @@ use bindings::Windows::Win32::ToolHelp::{
     PROCESSENTRY32,
 };
 
-// size_t will be either 4 or 8 bytes depending on whether it is x64 or x86 because it is usize
-// it is also a type from windows.
+/// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
 pub type size_t = usize;
 
@@ -43,6 +42,7 @@ pub fn get_module_handle(module_name: PWSTR) -> HMODULE {
     unsafe { GetModuleHandleW(module_name) }
 }
 
+/// Opens a process with the desired rights so you can perform actions upon it.
 pub fn open_process(
     desired_access: PROCESS_ACCESS_RIGHTS,
     inherit_handle: BOOL,
@@ -51,6 +51,7 @@ pub fn open_process(
     unsafe { OpenProcess(desired_access, inherit_handle, process_id) }
 }
 
+/// Creates a snapshot of current processes and etc.
 pub fn create_tool_help32_snapshot(
     flags: CREATE_TOOLHELP_SNAPSHOT_FLAGS,
     process_id: DWORD,
@@ -58,14 +59,17 @@ pub fn create_tool_help32_snapshot(
     unsafe { CreateToolhelp32Snapshot(flags, process_id) }
 }
 
+/// Gets the first process to start process enumeration.
 pub fn process32_first(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe { Process32First(snapshot, process_entry).into() }
 }
 
+/// Used to enumerate processes with usage of CreateToolhelp32Snapshot.
 pub fn process32_next(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe { Process32Next(snapshot, process_entry).into() }
 }
 
+/// Used to write to the memory of a process.
 pub fn write_process_memory(
     process_handle: HANDLE,
     base_address: LPVOID,
@@ -85,6 +89,7 @@ pub fn write_process_memory(
     }
 }
 
+/// Used to read the memory of a process.
 pub fn read_process_memory(
     process_handle: HANDLE,
     base_address: LPCVOID,
