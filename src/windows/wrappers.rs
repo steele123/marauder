@@ -6,9 +6,10 @@ use bindings::Windows::Win32::SystemServices::{
     NonClosableHandle, OpenProcess, BOOL, HANDLE, PROCESS_ACCESS_RIGHTS, PWSTR,
 };
 use bindings::Windows::Win32::ToolHelp::{
-    CreateToolhelp32Snapshot, Process32First, Process32Next, CREATE_TOOLHELP_SNAPSHOT_FLAGS,
-    PROCESSENTRY32,
+    CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
+    CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
 };
+use bindings::Windows::Win32::WindowsProgramming::CloseHandle;
 
 /// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
@@ -23,6 +24,10 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn close_handle(handle: HANDLE) -> bool {
+    unsafe { CloseHandle(handle).into() }
+}
 
 pub fn get_current_process() -> NonClosableHandle {
     unsafe { GetCurrentProcess() }
@@ -57,6 +62,14 @@ pub fn create_tool_help32_snapshot(
     process_id: DWORD,
 ) -> HANDLE {
     unsafe { CreateToolhelp32Snapshot(flags, process_id) }
+}
+
+pub fn module32_first(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
+    unsafe { Module32First(snapshot, module_entry).into() }
+}
+
+pub fn module32_next(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
+    unsafe { Module32Next(snapshot, module_entry).into() }
 }
 
 /// Gets the first process to start process enumeration.
