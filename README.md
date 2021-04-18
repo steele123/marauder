@@ -7,15 +7,15 @@ This library makes great use of Rust's features system to keep the library small
 ### Rust Features
 ```toml
 [features]
-# This feature determines if the library will be used for an external cheat.
+# If the library will be used for an external cheat.
 external = []
-# This feature determines if the library will be used for an internal cheat.
+# If the library will be used for an internal cheat.
 internal = []
-# This feature determines if the library will be used on a 32 bit game.
+# If the library will be used on a 32 bit game.
 64-bit = []
-# This feature determines if the library will be used on a 64 bit game.
+# If the library will be used on a 64 bit game.
 32-bit = []
-# This feature determines if the library will be to create an injector.
+# If the library will be to create an injector.
 injector = []
 ```
 
