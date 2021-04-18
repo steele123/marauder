@@ -3,9 +3,26 @@ name = "mem"
 version = "0.1.0"
 authors = ["Steele Scott <steele@steele.gg>"]
 edition = "2018"
+homepage = "https://steele.gg"
+readme = "README.md"
+description = "A utility library for hacking/reading memory of processes/games."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 bindings = { path = "bindings" }
 windows = { git = "https://github.com/microsoft/windows-rs" }
+
+[features]
+external = []
+internal = []
+64-bit = []
+32-bit = []
+
+[[example]]
+name = "external"
+required-features = ["external"]
+
+[[example]]
+name = "internal"
+required-features = ["internal"]
