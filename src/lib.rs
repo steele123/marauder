@@ -10,4 +10,4 @@ pub mod internal;
 #[cfg(any(target_os = "windows", feature = "external"))]
 pub mod external;
 
-pub mod process;
+pub mod mem;

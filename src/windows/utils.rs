@@ -6,7 +6,7 @@ use bindings::Windows::Win32::SystemServices::CHAR;
 use bindings::Windows::Win32::ToolHelp::{
     CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
 };
-use std::ffi::{CStr, CString};
+use std::ffi::CStr;
 use std::{io::Error, mem::size_of};
 
 pub fn convert_windows_string<const N: usize>(string: [CHAR; N]) -> &'static str {
