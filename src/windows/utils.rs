@@ -2,7 +2,7 @@ use crate::windows::wrappers::{
     close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first,
     process32_next, DWORD, DWORD_PTR,
 };
-use bindings::Windows::Win32::SystemServices::CHAR;
+use bindings::Windows::Win32::SystemServices::{CHAR, INVALID_HANDLE_VALUE};
 use bindings::Windows::Win32::ToolHelp::{
     CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
 };
@@ -21,9 +21,13 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     let mut process_id: DWORD = 0;
 
     let snapshot = create_tool_help32_snapshot(
-        CREATE_TOOLHELP_SNAPSHOT_FLAGS::TH32CS_SNAPMODULE,
+        CREATE_TOOLHELP_SNAPSHOT_FLAGS::TH32CS_SNAPPROCESS,
         process_id,
     );
+
+    if snapshot == INVALID_HANDLE_VALUE {
+        return Err(Error::last_os_error());
+    }
 
     let mut entry = PROCESSENTRY32 {
         dwSize: size_of::<PROCESSENTRY32>() as u32,
@@ -38,7 +42,7 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
                 break entry.th32ProcessID;
             }
 
-            if process32_next(snapshot, &mut entry) {
+            if !process32_next(snapshot, &mut entry) {
                 break 0;
             }
         };

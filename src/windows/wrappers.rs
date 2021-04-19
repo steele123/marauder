@@ -2,8 +2,10 @@ use std::os::raw::*;
 
 use bindings::Windows::Win32::Debug::{ReadProcessMemory, WriteProcessMemory};
 use bindings::Windows::Win32::SystemServices::{
-    DisableThreadLibraryCalls, FreeLibraryAndExitThread, GetCurrentProcess, GetModuleHandleW,
-    NonClosableHandle, OpenProcess, BOOL, HANDLE, PROCESS_ACCESS_RIGHTS, PWSTR,
+    CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
+    GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, WaitForSingleObject, BOOL,
+    HANDLE, LPTHREAD_START_ROUTINE, PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES,
+    THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
 };
 use bindings::Windows::Win32::ToolHelp::{
     CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
@@ -24,6 +26,52 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn wait_for_single_object(handle: HANDLE, milliseconds: u32) -> WAIT_RETURN_CAUSE {
+    unsafe { WaitForSingleObject(handle, milliseconds) }
+}
+
+pub fn create_remote_thread(
+    process: HANDLE,
+    thread_attributes: *mut SECURITY_ATTRIBUTES,
+    stack_size: usize,
+    start_address: Option<LPTHREAD_START_ROUTINE>,
+    parameter: *mut c_void,
+    creation_flags: u32,
+    thread_id: *mut u32,
+) -> HANDLE {
+    unsafe {
+        CreateRemoteThread(
+            process,
+            thread_attributes,
+            stack_size,
+            start_address,
+            parameter,
+            creation_flags,
+            thread_id,
+        )
+    }
+}
+
+pub fn create_thread(
+    thread_attributes: *mut SECURITY_ATTRIBUTES,
+    stack_size: usize,
+    start_address: Option<LPTHREAD_START_ROUTINE>,
+    parameter: *mut c_void,
+    creation_flags: THREAD_CREATION_FLAGS,
+    thread_id: *mut u32,
+) -> HANDLE {
+    unsafe {
+        CreateThread(
+            thread_attributes,
+            stack_size,
+            start_address,
+            parameter,
+            creation_flags,
+            thread_id,
+        )
+    }
+}
 
 pub fn close_handle(handle: HANDLE) -> bool {
     unsafe { CloseHandle(handle).into() }

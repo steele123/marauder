@@ -1,1 +1,3 @@
-pub mod memory;
+pub mod mem;
+
+pub mod macros;

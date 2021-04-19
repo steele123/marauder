@@ -1,10 +1,9 @@
+use mem::external::mem::Mem;
+
 fn main() {
-    println!("External");
     if cfg!(feature = "external") {
-        println!("aww")
+        println!("I am an external cheat.")
     }
 
-    if cfg!(feature = "internal") {
-        println!("aww2")
-    }
+    let mem = Mem::new("BloonsTD6.exe").expect("couldn't find BTD6");
 }
