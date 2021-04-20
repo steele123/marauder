@@ -19,14 +19,14 @@ pub struct Mem {
 }
 
 impl Mem {
-    pub fn new(process_name: &str) -> Result<Mem, Error> {
+    pub fn new(process_name: &str) -> Result<Mem> {
         let process_id = get_process_id(process_name)?;
         let module_base_address = get_module_base(process_id, process_name)?;
 
         let process = open_process(PROCESS_ACCESS_RIGHTS::PROCESS_ALL_ACCESS, FALSE, process_id);
 
         if process.is_null() {
-            return Err(Error::last_os_error());
+            return Err(Error::last_os_error().into());
         }
 
         Ok(Mem {
