@@ -9,12 +9,8 @@ use bindings::Windows::Win32::ToolHelp::{
 use std::ffi::CStr;
 use std::{io::Error, mem::size_of};
 
-pub fn convert_windows_string<const N: usize>(string: [CHAR; N]) -> &'static str {
-    unsafe {
-        CStr::from_ptr(string.as_ptr() as *const i8)
-            .to_str()
-            .unwrap()
-    }
+pub fn convert_windows_string<'a, const N: usize>(string: [CHAR; N]) -> Result<&'a str, Error> {
+    unsafe { CStr::from_ptr(string.as_ptr() as *const i8).to_str().into() }
 }
 
 pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
@@ -36,7 +32,7 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
 
     if process32_first(snapshot, &mut entry) {
         process_id = loop {
-            let current_name = convert_windows_string(entry.szExeFile);
+            let current_name = convert_windows_string(entry.szExeFile)?;
 
             if current_name == process_name {
                 break entry.th32ProcessID;
