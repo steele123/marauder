@@ -3,9 +3,9 @@ use std::os::raw::*;
 use bindings::Windows::Win32::Debug::{ReadProcessMemory, WriteProcessMemory};
 use bindings::Windows::Win32::SystemServices::{
     CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
-    GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, WaitForSingleObject, BOOL,
-    HANDLE, LPTHREAD_START_ROUTINE, PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES,
-    THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+    GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, VirtualProtect,
+    VirtualProtectEx, WaitForSingleObject, BOOL, HANDLE, LPTHREAD_START_ROUTINE, PAGE_TYPE,
+    PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
 };
 use bindings::Windows::Win32::ToolHelp::{
     CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
@@ -26,6 +26,25 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn virtual_protect_ex(
+    process: HANDLE,
+    address: *mut c_void,
+    size: usize,
+    new_protect: PAGE_TYPE,
+    old_protect: *mut PAGE_TYPE,
+) -> bool {
+    unsafe { VirtualProtectEx(process, address, size, new_protect, old_protect).into() }
+}
+
+pub fn virtual_protect(
+    address: *mut c_void,
+    size: usize,
+    new_protect: PAGE_TYPE,
+    old_protect: *mut PAGE_TYPE,
+) -> bool {
+    unsafe { VirtualProtect(address, size, new_protect, old_protect).into() }
+}
 
 pub fn wait_for_single_object(handle: HANDLE, milliseconds: u32) -> WAIT_RETURN_CAUSE {
     unsafe { WaitForSingleObject(handle, milliseconds) }
