@@ -1,7 +1,7 @@
 use crate::windows::utils::{get_module_base, get_process_id};
 use crate::windows::wrappers::{
-    close_handle, create_remote_thread, open_process, virtual_protect_ex, wait_for_single_object,
-    write_process_memory, DWORD, DWORD_PTR, LPVOID,
+    close_handle, create_remote_thread, open_process, uintptr_t, virtual_protect_ex,
+    wait_for_single_object, write_process_memory, DWORD, DWORD_PTR, LPVOID,
 };
 use anyhow::anyhow;
 use anyhow::Result;
@@ -34,6 +34,18 @@ impl Mem {
             module_base_address,
         })
     }
+
+    pub fn calculate_pointer(&self, pointer: uintptr_t, Vec<>) -> uintptr_t {}
+
+    pub fn read(&self) -> bool {}
+
+    pub fn write(&self) -> bool {}
+
+    pub fn restore(&self, address: *mut c_void) -> bool {}
+
+    pub fn compare(&self, address1: *mut c_void, address2: *mut c_void, size: usize) -> bool {}
+
+    pub fn copy(&self, destination_address: *mut c_void, source_address: *mut c_void) -> bool {}
 
     // TODO: Probably can make this function better when I know rust more.
     /// Puts a NOP code at a memory address. A NOP will literally do nothing, it is intended to replace

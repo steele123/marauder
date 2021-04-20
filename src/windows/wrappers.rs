@@ -1,6 +1,7 @@
 use std::os::raw::*;
 
 use bindings::Windows::Win32::Debug::{ReadProcessMemory, WriteProcessMemory};
+use bindings::Windows::Win32::KeyboardAndMouseInput::GetAsyncKeyState;
 use bindings::Windows::Win32::SystemServices::{
     CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
     GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, VirtualProtect,
@@ -16,6 +17,9 @@ use bindings::Windows::Win32::WindowsProgramming::CloseHandle;
 /// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
 pub type size_t = usize;
+/// used for pointers as types
+#[allow(non_camel_case_types)]
+pub type uintptr_t = usize;
 
 // Windows Data Types
 pub type DWORD = c_ulong;
@@ -26,6 +30,10 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn get_async_key_state(key: i32) -> i16 {
+    unsafe { GetAsyncKeyState(key) }
+}
 
 pub fn virtual_protect_ex(
     process: HANDLE,
