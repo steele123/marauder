@@ -10,7 +10,6 @@ use bindings::Windows::Win32::SystemServices::{
     SECURITY_ATTRIBUTES,
 };
 use bindings::Windows::Win32::WindowsProgramming::INFINITE;
-use std::default::default;
 use std::ffi::c_void;
 use std::io::Error;
 
