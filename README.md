@@ -1,8 +1,14 @@
 # mem-rs
 mem-rs is a library that intends to make game hacking in rust easy so you don't need to deal with the bullshit of converting c++ types into rust types or dealing with unsafe keywords everywhere.
 
-## Important
 This library makes great use of Rust's features system to keep the library small and efficient
+
+In the end I mostly just want to have this library to the point where you will never have to touch WINAPI in rust and you won't have to go through hell to setup a quite memory read and get all the amazing performance from rust itself.
+
+I don't care how you use the library as long as it is useful for you. Use it in whatever you want.
+
+## In Development
+I am using mem-rs for my own usage personally and would like to have it shared on github because I couldn't find any memory libraries doing the same things that I wanted from them. The APIs may change a lot or they may change not at all just please keep that in mind...
 
 ### Rust Features
 ```toml
