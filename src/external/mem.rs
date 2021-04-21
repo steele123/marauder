@@ -1,13 +1,14 @@
 use crate::windows::utils::{get_module_base, get_process_id};
 use crate::windows::wrappers::{
-    close_handle, create_remote_thread, open_process, uintptr_t, virtual_protect_ex,
-    wait_for_single_object, write_process_memory, DWORD, DWORD_PTR, LPVOID,
+    close_handle, create_remote_thread, open_process, ptr, read_process_memory, size_t,
+    virtual_protect, virtual_protect_ex, virtual_query_ex, wait_for_single_object,
+    write_process_memory, DWORD, DWORD_PTR, LPCVOID, LPVOID,
 };
 use anyhow::anyhow;
 use anyhow::Result;
 use bindings::Windows::Win32::SystemServices::{
-    FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, PAGE_TYPE, PROCESS_ACCESS_RIGHTS,
-    SECURITY_ATTRIBUTES,
+    FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION,
+    PAGE_TYPE, PROCESS_ACCESS_RIGHTS, SECURITY_ATTRIBUTES,
 };
 use bindings::Windows::Win32::WindowsProgramming::INFINITE;
 use std::ffi::c_void;
@@ -35,17 +36,45 @@ impl Mem {
         })
     }
 
-    pub fn calculate_pointer(&self, pointer: uintptr_t, Vec<>) -> uintptr_t {}
+    pub fn write_value<T>(&self, pointer: ptr, output: T, relative: bool) -> bool {
+        let relative_value_address = if relative {
+            pointer + self.module_base_address
+        } else {
+            pointer
+        };
 
-    pub fn read(&self) -> bool {}
+        let mut bytes_written: usize = 0;
 
-    pub fn write(&self) -> bool {}
+        write_process_memory(
+            self.process,
+            relative_value_address as LPVOID,
+            (&output as *const T) as LPVOID,
+            std::mem::size_of::<T>() as usize,
+            &mut bytes_written,
+        );
 
-    pub fn restore(&self, address: *mut c_void) -> bool {}
+        bytes_written != 0
+    }
 
-    pub fn compare(&self, address1: *mut c_void, address2: *mut c_void, size: usize) -> bool {}
+    pub fn read_value<T>(&self, pointer: ptr, relative: bool) -> T {
+        let relative_value_address = if relative {
+            pointer + self.module_base_address
+        } else {
+            pointer
+        };
 
-    pub fn copy(&self, destination_address: *mut c_void, source_address: *mut c_void) -> bool {}
+        let mut buffer: T = unsafe { std::mem::zeroed() };
+
+        read_process_memory(
+            self.process,
+            relative_value_address as LPCVOID,
+            &mut buffer as *mut T as LPVOID,
+            std::mem::size_of::<T>(),
+            0 as *mut size_t,
+        );
+
+        buffer
+    }
 
     // TODO: Probably can make this function better when I know rust more.
     /// Puts a NOP code at a memory address. A NOP will literally do nothing, it is intended to replace

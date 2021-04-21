@@ -5,8 +5,9 @@ use bindings::Windows::Win32::KeyboardAndMouseInput::GetAsyncKeyState;
 use bindings::Windows::Win32::SystemServices::{
     CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
     GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, VirtualProtect,
-    VirtualProtectEx, WaitForSingleObject, BOOL, HANDLE, LPTHREAD_START_ROUTINE, PAGE_TYPE,
-    PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+    VirtualProtectEx, VirtualQueryEx, WaitForSingleObject, BOOL, HANDLE, LPTHREAD_START_ROUTINE,
+    MEMORY_BASIC_INFORMATION, PAGE_TYPE, PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES,
+    THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
 };
 use bindings::Windows::Win32::ToolHelp::{
     CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
@@ -19,7 +20,7 @@ use bindings::Windows::Win32::WindowsProgramming::CloseHandle;
 pub type size_t = usize;
 /// used for pointers as types
 #[allow(non_camel_case_types)]
-pub type uintptr_t = usize;
+pub type ptr = usize;
 
 // Windows Data Types
 pub type DWORD = c_ulong;
@@ -30,6 +31,15 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn virtual_query_ex(
+    process: HANDLE,
+    address: *const c_void,
+    buffer: *mut MEMORY_BASIC_INFORMATION,
+    length: usize,
+) -> usize {
+    unsafe { VirtualQueryEx(process, address, buffer, length) }
+}
 
 pub fn get_async_key_state(key: i32) -> i16 {
     unsafe { GetAsyncKeyState(key) }

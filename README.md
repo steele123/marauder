@@ -11,10 +11,6 @@ This library makes great use of Rust's features system to keep the library small
 external = []
 # If the library will be used for an internal cheat.
 internal = []
-# If the library will be used on a 32 bit game.
-64-bit = []
-# If the library will be used on a 64 bit game.
-32-bit = []
 # If the library will be to create an injector.
 injector = []
 ```

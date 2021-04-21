@@ -36,7 +36,7 @@ macro_rules! dll_main {
 ///
 /// # Example:
 ///
-/// Target Functions
+/// ## Target Functions
 /// ```rust
 /// // Target Function 1
 /// fn hello_world(hello: &str) {
@@ -77,9 +77,13 @@ macro_rules! make_fn {
 
 /// Makes a function with a pointer that has no return type.
 ///
+/// # Safety:
+/// This function is very unsafe extremely unsafe due to the use of std::mem::transmute. Make sure
+/// you know what you are doing so you don't get a access violation which will crash your process.
+///
 /// # Example:
 ///
-/// Target Functions
+/// ## Target Functions
 /// ```rust
 /// // Target Function 1
 /// fn hello_world(hello: &str) {
