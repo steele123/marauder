@@ -1,1 +1,3 @@
-pub mod mem;
+mod mem;
+
+pub use mem::*;
