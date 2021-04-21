@@ -15,13 +15,13 @@ use bindings::Windows::Win32::WindowsProgramming::INFINITE;
 use std::ffi::c_void;
 use std::io::Error;
 
-pub struct InternalMem {
+pub struct Mem {
     pub process: HANDLE,
     pub module_base_address: DWORD_PTR,
 }
 
 #[cfg(feature = "internal")]
-impl MemFns for InternalMem {
+impl MemFns for Mem {
     fn new(process_name: &str) -> Result<Self> {
         let process_id = get_process_id(process_name)?;
         let module_base_address = get_module_base(process_id, process_name)?;

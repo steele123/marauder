@@ -5,5 +5,5 @@ fn main() {
         println!("I am an external cheat.")
     }
 
-    let mem = mem::external::ExternalMem::new("BloonsTD6.exe").expect("couldn't find BTD6");
+    let mem = mem::external::Mem::new("BloonsTD6.exe").expect("couldn't find BTD6");
 }
