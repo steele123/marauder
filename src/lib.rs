@@ -17,6 +17,7 @@ pub mod internal;
 #[macro_use]
 pub mod macros;
 
+#[cfg(any(feature = "external", feature = "internal"))]
 pub trait MemFns {
     fn new<T>(process_name: &str) -> Result<T>;
 

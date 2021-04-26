@@ -6,16 +6,17 @@ use bindings::Windows::Win32::Debug::{ReadProcessMemory, WriteProcessMemory};
 use bindings::Windows::Win32::KeyboardAndMouseInput::GetAsyncKeyState;
 use bindings::Windows::Win32::SystemServices::{
     CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
-    GetCurrentProcess, GetModuleHandleW, NonClosableHandle, OpenProcess, VirtualProtect,
-    VirtualProtectEx, VirtualQueryEx, WaitForSingleObject, BOOL, HANDLE, LPTHREAD_START_ROUTINE,
-    MEMORY_BASIC_INFORMATION, PAGE_TYPE, PROCESS_ACCESS_RIGHTS, PWSTR, SECURITY_ATTRIBUTES,
-    THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+    GetCurrentProcess, GetModuleHandleA, GetModuleHandleW, NonClosableHandle, OpenProcess,
+    VirtualProtect, VirtualProtectEx, VirtualQueryEx, WaitForSingleObject, BOOL, HANDLE,
+    LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION, PAGE_TYPE, PROCESS_ACCESS_RIGHTS, PWSTR,
+    SECURITY_ATTRIBUTES, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
 };
 use bindings::Windows::Win32::ToolHelp::{
     CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
     CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
 };
 use bindings::Windows::Win32::WindowsProgramming::CloseHandle;
+use windows::IntoParam;
 
 /// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
@@ -33,6 +34,10 @@ pub type LPCVOID = *const c_void;
 pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
+
+pub fn get_module_handle(module_name: &str) -> HMODULE {
+    unsafe { GetModuleHandleA(module_name) }
+}
 
 pub fn virtual_query_ex(
     process: HANDLE,
@@ -128,10 +133,6 @@ pub fn free_library_and_exit_thread(module_handle: HMODULE, exit_code: DWORD) {
 
 pub fn disable_thread_library_calls(library_module: HMODULE) -> bool {
     unsafe { DisableThreadLibraryCalls(library_module).into() }
-}
-
-pub fn get_module_handle(module_name: PWSTR) -> HMODULE {
-    unsafe { GetModuleHandleW(module_name) }
 }
 
 /// Opens a process with the desired rights so you can perform actions upon it.
