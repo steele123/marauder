@@ -4,7 +4,6 @@ use crate::windows::wrappers::{
     virtual_protect, virtual_protect_ex, virtual_query_ex, wait_for_single_object,
     write_process_memory, DWORD, DWORD_PTR, LPCVOID, LPVOID,
 };
-use crate::MemFns;
 use anyhow::anyhow;
 use anyhow::Result;
 use bindings::Windows::Win32::SystemServices::{
@@ -21,8 +20,8 @@ pub struct Mem {
 }
 
 #[cfg(feature = "external")]
-impl MemFns for Mem {
-    fn new(process_name: &str) -> Result<Self> {
+impl Mem {
+    pub fn new(process_name: &str) -> Result<Self> {
         let process_id = get_process_id(process_name)?;
         let module_base_address = get_module_base(process_id, process_name)?;
 
@@ -38,7 +37,7 @@ impl MemFns for Mem {
         })
     }
 
-    fn write_value<T>(&self, pointer: ptr, output: T, relative: bool) -> bool {
+    pub fn write_value<T>(&self, pointer: ptr, output: T, relative: bool) -> bool {
         let relative_value_address = if relative {
             pointer + self.module_base_address
         } else {
@@ -58,7 +57,7 @@ impl MemFns for Mem {
         bytes_written != 0
     }
 
-    fn read_value<T>(&self, pointer: ptr, relative: bool) -> T {
+    pub fn read_value<T>(&self, pointer: ptr, relative: bool) -> T {
         let relative_value_address = if relative {
             pointer + self.module_base_address
         } else {
@@ -81,7 +80,7 @@ impl MemFns for Mem {
     // TODO: Probably can make this function better when I know rust more.
     /// Puts a NOP code at a memory address. A NOP will literally do nothing, it is intended to replace
     /// a assembly instruction to make it no longer do anything yet still allow the process to compile.
-    fn nop(&self, address: *mut c_void, size: usize) {
+    pub fn nop(&self, address: *mut c_void, size: usize) {
         let nop_array = vec![0; size];
 
         unsafe {
@@ -93,7 +92,7 @@ impl MemFns for Mem {
 
     /// Idk if this will be used at all, maybe... Essentially you just create a thread for another process
     /// then your function will be called at that threads start routine.
-    fn call_function(&self, function: LPTHREAD_START_ROUTINE) -> Result<()> {
+    pub fn call_function(&self, function: LPTHREAD_START_ROUTINE) -> Result<()> {
         let thread_handle = create_remote_thread(
             self.process,
             std::ptr::null_mut(),
@@ -114,7 +113,7 @@ impl MemFns for Mem {
         Ok(())
     }
 
-    fn patch(&self, address: *mut c_void, base: LPVOID, size: usize) {
+    pub fn patch(&self, address: *mut c_void, base: LPVOID, size: usize) {
         let old_protect: *mut PAGE_TYPE = std::ptr::null_mut();
 
         // Changes a memory regions protection so we can write to it.

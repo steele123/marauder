@@ -21,7 +21,6 @@ pub struct Mem {
     pub module_base_address: DWORD_PTR,
 }
 
-#[cfg(feature = "internal")]
 impl Mem {
     /*
     fn new(optional_module_name: Option<&str>) -> Result<Self> {
