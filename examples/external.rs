@@ -1,7 +1,7 @@
 fn main() {
     if cfg!(feature = "external") {
-        println!("I am an external cheat.")
+        println!("This is a external memory reader for the game assault cube, I cannot redistribute the files but its a easy game to find")
     }
 
-    let mem = mem::external::Mem::new("BloonsTD6.exe").expect("couldn't find BTD6");
+    let mem = mem::internal::mem::Mem::new("AssaultCube.exe");
 }

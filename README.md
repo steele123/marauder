@@ -7,6 +7,10 @@ In the end I mostly just want to have this library to the point where you will n
 
 I don't care how you use the library as long as it is useful for you. Use it in whatever you want.
 
+## UPDATE 5/4/2021
+I am still currently developing mem-rs but have been extremely busy as of lately and haven't been able to work as much 
+as I have wanted to on mem-rs and the project is probably not usable in its current state YET but will be very very soon :)
+
 ## In Development
 I am using mem-rs for my own usage personally and would like to have it shared on github because I couldn't find any memory libraries doing the same things that I wanted from them. The APIs may change a lot or they may change not at all just please keep that in mind...
 
