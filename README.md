@@ -14,18 +14,6 @@ as I have wanted to on mem-rs and the project is probably not usable in its curr
 ## In Development
 I am using mem-rs for my own usage personally and would like to have it shared on github because I couldn't find any memory libraries doing the same things that I wanted from them. The APIs may change a lot or they may change not at all just please keep that in mind...
 
-### Rust Features
-```toml
-[features]
-# If the library will be used for an external cheat.
-external = []
-# If the library will be used for an internal cheat.
-internal = []
-# If the library will be to create an injector.
-injector = []
-```
-
-
 ## Plans
 Currently I plan on making this project have anything you would need so you have no need to touch c++ or windows APIs
 I would like for this to do as follows

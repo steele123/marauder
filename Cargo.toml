@@ -3,12 +3,11 @@ name = "mem"
 version = "0.1.0"
 authors = ["Steele Scott <steele@steele.gg>"]
 edition = "2018"
-homepage = "https://steele.gg"
 readme = "README.md"
 description = "A utility library for hacking/reading memory of processes/games."
 
 [dependencies]
-anyhow = "1.0.40"
+thiserror = "1.0.25"
 bindings = { path = "bindings" }
 windows = { git = "https://github.com/microsoft/windows-rs" }
 
@@ -19,8 +18,5 @@ injector = []
 
 [[example]]
 name = "external"
+path = "examples/external.rs"
 required-features = ["external"]
-
-[[example]]
-name = "internal"
-required-features = ["internal"]

@@ -1,18 +1,16 @@
+use crate::error::Error;
 use crate::windows::utils::{get_module_base, get_process_id};
 use crate::windows::wrappers::{
     close_handle, create_remote_thread, open_process, ptr, read_process_memory, size_t,
     virtual_protect, virtual_protect_ex, virtual_query_ex, wait_for_single_object,
     write_process_memory, DWORD, DWORD_PTR, LPCVOID, LPVOID,
 };
-use anyhow::anyhow;
-use anyhow::Result;
 use bindings::Windows::Win32::SystemServices::{
     FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION,
     PAGE_TYPE, PROCESS_ACCESS_RIGHTS, SECURITY_ATTRIBUTES,
 };
 use bindings::Windows::Win32::WindowsProgramming::INFINITE;
 use std::ffi::c_void;
-use std::io::Error;
 
 pub struct Mem {
     pub process: HANDLE,
@@ -21,14 +19,14 @@ pub struct Mem {
 
 #[cfg(feature = "external")]
 impl Mem {
-    pub fn new(process_name: &str) -> Result<Self> {
+    pub fn new(process_name: &str) -> Result<Self, Error> {
         let process_id = get_process_id(process_name)?;
         let module_base_address = get_module_base(process_id, process_name)?;
 
         let process = open_process(PROCESS_ACCESS_RIGHTS::PROCESS_ALL_ACCESS, FALSE, process_id);
 
         if process.is_null() {
-            return Err(Error::last_os_error().into());
+            return Err(std::io::Error::last_os_error().into());
         }
 
         Ok(Self {
@@ -77,7 +75,6 @@ impl Mem {
         buffer
     }
 
-    // TODO: Probably can make this function better when I know rust more.
     /// Puts a NOP code at a memory address. A NOP will literally do nothing, it is intended to replace
     /// a assembly instruction to make it no longer do anything yet still allow the process to compile.
     pub fn nop(&self, address: *mut c_void, size: usize) {
@@ -92,7 +89,7 @@ impl Mem {
 
     /// Idk if this will be used at all, maybe... Essentially you just create a thread for another process
     /// then your function will be called at that threads start routine.
-    pub fn call_function(&self, function: LPTHREAD_START_ROUTINE) -> Result<()> {
+    pub fn call_function(&self, function: LPTHREAD_START_ROUTINE) -> Result<(), Error> {
         let thread_handle = create_remote_thread(
             self.process,
             std::ptr::null_mut(),
@@ -104,7 +101,7 @@ impl Mem {
         );
 
         if thread_handle == INVALID_HANDLE_VALUE {
-            return Err(anyhow!("Thread handle is invalid"));
+            return Err(Error::Handle);
         }
 
         wait_for_single_object(thread_handle, INFINITE);
