@@ -3,27 +3,27 @@ use crate::windows::wrappers::{
     close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first,
     process32_next, DWORD, DWORD_PTR,
 };
-use bindings::Windows::Win32::SystemServices::{CHAR, INVALID_HANDLE_VALUE};
-use bindings::Windows::Win32::ToolHelp::{
-    CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
+use bindings::Windows::Win32::System::Diagnostics::ToolHelp::{
+    CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE,
+    TH32CS_SNAPPROCESS,
 };
+use bindings::Windows::Win32::System::SystemServices::{CHAR, INVALID_HANDLE_VALUE};
 use std::ffi::CStr;
 use std::mem::size_of;
 
+#[must_use]
 pub fn convert_windows_string<'a, const N: usize>(string: [CHAR; N]) -> Result<&'a str, Error> {
     unsafe { Ok(CStr::from_ptr(string.as_ptr() as *const i8).to_str()?) }
 }
 
+#[must_use]
 pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     let mut process_id: DWORD = 0;
 
-    let snapshot = create_tool_help32_snapshot(
-        CREATE_TOOLHELP_SNAPSHOT_FLAGS::TH32CS_SNAPPROCESS,
-        process_id,
-    );
+    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPPROCESS, process_id);
 
     if snapshot == INVALID_HANDLE_VALUE {
-        return Err(std::io::Error::last_os_error().into());
+        return Err(Error::Handle);
     }
 
     let mut entry = PROCESSENTRY32 {
@@ -48,19 +48,17 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     }
 
     if process_id == 0 {
-        return Err(std::io::Error::last_os_error().into());
+        return Err(Error::ProcessNotFound);
     }
 
     Ok(process_id)
 }
 
+#[must_use]
 pub fn get_module_base(process_id: DWORD, module_name: &str) -> Result<DWORD_PTR, Error> {
     let mut module_base_address: DWORD_PTR = 0x0;
 
-    let snapshot = create_tool_help32_snapshot(
-        CREATE_TOOLHELP_SNAPSHOT_FLAGS::TH32CS_SNAPMODULE,
-        process_id,
-    );
+    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPMODULE, process_id);
 
     let mut entry = MODULEENTRY32 {
         dwSize: size_of::<MODULEENTRY32>() as u32,

@@ -9,7 +9,7 @@ description = "A utility library for hacking/reading memory of processes/games."
 [dependencies]
 thiserror = "1.0.25"
 bindings = { path = "bindings" }
-windows = { git = "https://github.com/microsoft/windows-rs" }
+windows = "0.10.0"
 
 [features]
 external = []

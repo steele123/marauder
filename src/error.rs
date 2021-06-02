@@ -8,4 +8,6 @@ pub enum Error {
     Os(#[from] std::io::Error),
     #[error("Error converting C string to a rust &str")]
     StringConversion(#[from] std::str::Utf8Error),
+    #[error("Process not found")]
+    ProcessNotFound,
 }

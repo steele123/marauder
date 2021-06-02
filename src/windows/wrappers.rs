@@ -1,22 +1,23 @@
 #![allow(clippy::not_unsafe_ptr_arg_deref)]
 
-use std::os::raw::*;
-
-use bindings::Windows::Win32::Debug::{ReadProcessMemory, WriteProcessMemory};
-use bindings::Windows::Win32::KeyboardAndMouseInput::GetAsyncKeyState;
-use bindings::Windows::Win32::SystemServices::{
-    CreateRemoteThread, CreateThread, DisableThreadLibraryCalls, FreeLibraryAndExitThread,
-    GetCurrentProcess, GetModuleHandleA, GetModuleHandleW, NonClosableHandle, OpenProcess,
-    VirtualProtect, VirtualProtectEx, VirtualQueryEx, WaitForSingleObject, BOOL, HANDLE,
-    LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION, PAGE_TYPE, PROCESS_ACCESS_RIGHTS, PWSTR,
-    SECURITY_ATTRIBUTES, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
-};
-use bindings::Windows::Win32::ToolHelp::{
+use bindings::Windows::Win32::System::Diagnostics::Debug::{ReadProcessMemory, WriteProcessMemory};
+use bindings::Windows::Win32::System::Diagnostics::ToolHelp::{
     CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
     CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
 };
-use bindings::Windows::Win32::WindowsProgramming::CloseHandle;
-use windows::IntoParam;
+use bindings::Windows::Win32::System::Memory::{VirtualProtect, VirtualProtectEx, VirtualQueryEx};
+use bindings::Windows::Win32::System::SystemServices::{
+    DisableThreadLibraryCalls, FreeLibraryAndExitThread, GetModuleHandleA, BOOL, HANDLE, HINSTANCE,
+    LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION, PAGE_TYPE, SECURITY_ATTRIBUTES,
+};
+use bindings::Windows::Win32::System::Threading::{
+    CreateRemoteThread, CreateThread, GetCurrentProcess, OpenProcess, WaitForSingleObject,
+    PROCESS_ACCESS_RIGHTS, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+};
+use bindings::Windows::Win32::System::WindowsProgramming::CloseHandle;
+use bindings::Windows::Win32::UI::KeyboardAndMouseInput::GetAsyncKeyState;
+
+use std::os::raw::*;
 
 /// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
@@ -35,7 +36,7 @@ pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
 
-pub fn get_module_handle(module_name: &str) -> HMODULE {
+pub fn get_module_handle(module_name: &str) -> HINSTANCE {
     unsafe { GetModuleHandleA(module_name) }
 }
 
@@ -121,17 +122,17 @@ pub fn close_handle(handle: HANDLE) -> bool {
     unsafe { CloseHandle(handle).into() }
 }
 
-pub fn get_current_process() -> NonClosableHandle {
+pub fn get_current_process() -> HANDLE {
     unsafe { GetCurrentProcess() }
 }
 
-pub fn free_library_and_exit_thread(module_handle: HMODULE, exit_code: DWORD) {
+pub fn free_library_and_exit_thread(module_handle: HINSTANCE, exit_code: DWORD) {
     unsafe {
         FreeLibraryAndExitThread(module_handle, exit_code);
     }
 }
 
-pub fn disable_thread_library_calls(library_module: HMODULE) -> bool {
+pub fn disable_thread_library_calls(library_module: HINSTANCE) -> bool {
     unsafe { DisableThreadLibraryCalls(library_module).into() }
 }
 

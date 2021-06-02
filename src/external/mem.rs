@@ -5,11 +5,11 @@ use crate::windows::wrappers::{
     virtual_protect, virtual_protect_ex, virtual_query_ex, wait_for_single_object,
     write_process_memory, DWORD, DWORD_PTR, LPCVOID, LPVOID,
 };
-use bindings::Windows::Win32::SystemServices::{
-    FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION,
-    PAGE_TYPE, PROCESS_ACCESS_RIGHTS, SECURITY_ATTRIBUTES,
+use bindings::Windows::Win32::System::SystemServices::{
+    FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, PAGE_EXECUTE_READWRITE, PAGE_TYPE,
 };
-use bindings::Windows::Win32::WindowsProgramming::INFINITE;
+use bindings::Windows::Win32::System::Threading::{PROCESS_ACCESS_RIGHTS, PROCESS_ALL_ACCESS};
+use bindings::Windows::Win32::System::WindowsProgramming::INFINITE;
 use std::ffi::c_void;
 
 pub struct Mem {
@@ -23,7 +23,7 @@ impl Mem {
         let process_id = get_process_id(process_name)?;
         let module_base_address = get_module_base(process_id, process_name)?;
 
-        let process = open_process(PROCESS_ACCESS_RIGHTS::PROCESS_ALL_ACCESS, FALSE, process_id);
+        let process = open_process(PROCESS_ALL_ACCESS, FALSE, process_id);
 
         if process.is_null() {
             return Err(std::io::Error::last_os_error().into());
@@ -118,7 +118,7 @@ impl Mem {
             self.process,
             address,
             size,
-            PAGE_TYPE::PAGE_EXECUTE_READWRITE,
+            PAGE_EXECUTE_READWRITE,
             old_protect,
         );
 
