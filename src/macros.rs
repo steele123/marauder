@@ -1,3 +1,6 @@
+use crate::windows::wrappers::{
+    close_handle, create_thread, disable_thread_library_calls, DWORD, HMODULE, LPVOID,
+};
 use bindings::Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
 
 /// Assists the process of creating a DllMain function so you don't fuck it up since its a odd way
