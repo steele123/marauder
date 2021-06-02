@@ -4,8 +4,7 @@ use crate::windows::wrappers::{
     process32_next, DWORD, DWORD_PTR,
 };
 use bindings::Windows::Win32::System::Diagnostics::ToolHelp::{
-    CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE,
-    TH32CS_SNAPPROCESS,
+    MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS,
 };
 use bindings::Windows::Win32::System::SystemServices::{CHAR, INVALID_HANDLE_VALUE};
 use std::ffi::CStr;
