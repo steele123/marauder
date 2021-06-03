@@ -1,8 +1,6 @@
 use crate::windows::wrappers::DWORD_PTR;
-use bindings::Windows::Win32::SystemServices::HANDLE;
 
 pub struct Mem {
-    pub process: HANDLE,
     // module_base_address is typically not a usize but I want it to be added to pointers without casts
     pub module_base_address: DWORD_PTR,
 }
