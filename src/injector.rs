@@ -44,11 +44,11 @@ pub enum PECloaking {
 }
 
 pub struct Config {
-    injection_method: InjectionMethod,
-    execution_method: CodeExecutionMethod,
-    cloak_thread: Option<bool>,
-    randomize_file_name: Option<bool>,
-    pe_cloaking: Option<PECloaking>,
+    pub injection_method: InjectionMethod,
+    pub execution_method: CodeExecutionMethod,
+    pub cloak_thread: Option<bool>,
+    pub randomize_file_name: Option<bool>,
+    pub pe_cloaking: Option<PECloaking>,
 }
 
 pub struct Injector {
