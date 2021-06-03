@@ -10,4 +10,10 @@ pub enum Error {
     StringConversion(#[from] std::str::Utf8Error),
     #[error("Process not found")]
     ProcessNotFound,
+    #[error(transparent)]
+    NulError(#[from] std::ffi::NulError),
+    #[error("Couldn't write memory")]
+    MemoryWrite,
+    #[error("Couldn't find function in the process")]
+    ProcessAddress,
 }
