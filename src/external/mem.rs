@@ -2,8 +2,8 @@ use crate::error::Error;
 use crate::windows::utils::{get_module_base, get_process_id};
 use crate::windows::wrappers::{
     close_handle, create_remote_thread, open_process, ptr, read_process_memory, size_t,
-    virtual_protect_ex, virtual_query_ex, wait_for_single_object, write_process_memory, DWORD,
-    DWORD_PTR, LPCVOID, LPVOID,
+    virtual_protect_ex, wait_for_single_object, write_process_memory, DWORD, DWORD_PTR, LPCVOID,
+    LPVOID,
 };
 use bindings::Windows::Win32::System::SystemServices::{
     FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, PAGE_EXECUTE_READWRITE, PAGE_TYPE,

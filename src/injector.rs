@@ -139,8 +139,8 @@ fn get_fn_address<'a>(module_name: &str, fn_name: &str) -> Result<u64, Error> {
 
     let function = unsafe { GetProcAddress(module_handle, PSTR(fn_str.into_raw() as _)) };
 
-    return match function {
+    match function {
         None => Err(Error::ProcessAddress),
         Some(function) => Ok(function as u64),
-    };
+    }
 }
