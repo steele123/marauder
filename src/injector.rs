@@ -1,5 +1,4 @@
 use crate::error::Error;
-use crate::injector::CodeExecutionMethod::CreateRemoteThread;
 use crate::windows::wrappers::{open_process, DWORD, LPVOID};
 use bindings::Windows::Win32::System::Diagnostics::Debug::WriteProcessMemory;
 use bindings::Windows::Win32::System::Memory::{
@@ -82,7 +81,7 @@ impl Injector {
             )
         };
 
-        if path == null_mut() {
+        if path.is_null() {
             return Err(std::io::Error::last_os_error().into());
         }
 

@@ -36,11 +36,11 @@ pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
 
-pub fn get_module_handle(module_name: &str) -> HINSTANCE {
+pub(crate) fn get_module_handle(module_name: &str) -> HINSTANCE {
     unsafe { GetModuleHandleA(module_name) }
 }
 
-pub fn virtual_query_ex(
+pub(crate) fn virtual_query_ex(
     process: HANDLE,
     address: *const c_void,
     buffer: *mut MEMORY_BASIC_INFORMATION,
@@ -49,11 +49,11 @@ pub fn virtual_query_ex(
     unsafe { VirtualQueryEx(process, address, buffer, length) }
 }
 
-pub fn get_async_key_state(key: i32) -> i16 {
+pub(crate) fn get_async_key_state(key: i32) -> i16 {
     unsafe { GetAsyncKeyState(key) }
 }
 
-pub fn virtual_protect_ex(
+pub(crate) fn virtual_protect_ex(
     process: HANDLE,
     address: *mut c_void,
     size: usize,
@@ -63,7 +63,7 @@ pub fn virtual_protect_ex(
     unsafe { VirtualProtectEx(process, address, size, new_protect, old_protect).into() }
 }
 
-pub fn virtual_protect(
+pub(crate) fn virtual_protect(
     address: *mut c_void,
     size: usize,
     new_protect: PAGE_TYPE,
@@ -72,11 +72,11 @@ pub fn virtual_protect(
     unsafe { VirtualProtect(address, size, new_protect, old_protect).into() }
 }
 
-pub fn wait_for_single_object(handle: HANDLE, milliseconds: u32) -> WAIT_RETURN_CAUSE {
+pub(crate) fn wait_for_single_object(handle: HANDLE, milliseconds: u32) -> WAIT_RETURN_CAUSE {
     unsafe { WaitForSingleObject(handle, milliseconds) }
 }
 
-pub fn create_remote_thread(
+pub(crate) fn create_remote_thread(
     process: HANDLE,
     thread_attributes: *mut SECURITY_ATTRIBUTES,
     stack_size: usize,
@@ -98,7 +98,7 @@ pub fn create_remote_thread(
     }
 }
 
-pub fn create_thread(
+pub(crate) fn create_thread(
     thread_attributes: *mut SECURITY_ATTRIBUTES,
     stack_size: usize,
     start_address: Option<LPTHREAD_START_ROUTINE>,
@@ -118,26 +118,26 @@ pub fn create_thread(
     }
 }
 
-pub fn close_handle(handle: HANDLE) -> bool {
+pub(crate) fn close_handle(handle: HANDLE) -> bool {
     unsafe { CloseHandle(handle).into() }
 }
 
-pub fn get_current_process() -> HANDLE {
+pub(crate) fn get_current_process() -> HANDLE {
     unsafe { GetCurrentProcess() }
 }
 
-pub fn free_library_and_exit_thread(module_handle: HINSTANCE, exit_code: DWORD) {
+pub(crate) fn free_library_and_exit_thread(module_handle: HINSTANCE, exit_code: DWORD) {
     unsafe {
         FreeLibraryAndExitThread(module_handle, exit_code);
     }
 }
 
-pub fn disable_thread_library_calls(library_module: HINSTANCE) -> bool {
+pub(crate) fn disable_thread_library_calls(library_module: HINSTANCE) -> bool {
     unsafe { DisableThreadLibraryCalls(library_module).into() }
 }
 
 /// Opens a process with the desired rights so you can perform actions upon it.
-pub fn open_process(
+pub(crate) fn open_process(
     desired_access: PROCESS_ACCESS_RIGHTS,
     inherit_handle: BOOL,
     process_id: DWORD,
@@ -146,33 +146,33 @@ pub fn open_process(
 }
 
 /// Creates a snapshot of current processes and etc.
-pub fn create_tool_help32_snapshot(
+pub(crate) fn create_tool_help32_snapshot(
     flags: CREATE_TOOLHELP_SNAPSHOT_FLAGS,
     process_id: DWORD,
 ) -> HANDLE {
     unsafe { CreateToolhelp32Snapshot(flags, process_id) }
 }
 
-pub fn module32_first(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
+pub(crate) fn module32_first(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
     unsafe { Module32First(snapshot, module_entry).into() }
 }
 
-pub fn module32_next(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
+pub(crate) fn module32_next(snapshot: HANDLE, module_entry: &mut MODULEENTRY32) -> bool {
     unsafe { Module32Next(snapshot, module_entry).into() }
 }
 
 /// Gets the first process to start process enumeration.
-pub fn process32_first(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
+pub(crate) fn process32_first(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe { Process32First(snapshot, process_entry).into() }
 }
 
 /// Used to enumerate processes with usage of CreateToolhelp32Snapshot.
-pub fn process32_next(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
+pub(crate) fn process32_next(snapshot: HANDLE, process_entry: &mut PROCESSENTRY32) -> bool {
     unsafe { Process32Next(snapshot, process_entry).into() }
 }
 
 /// Used to write to the memory of a process.
-pub fn write_process_memory(
+pub(crate) fn write_process_memory(
     process_handle: HANDLE,
     base_address: LPVOID,
     buffer: LPCVOID,
@@ -192,7 +192,7 @@ pub fn write_process_memory(
 }
 
 /// Used to read the memory of a process.
-pub fn read_process_memory(
+pub(crate) fn read_process_memory(
     process_handle: HANDLE,
     base_address: LPCVOID,
     buffer: LPVOID,
