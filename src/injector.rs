@@ -45,9 +45,33 @@ pub enum PECloaking {
 pub struct Config {
     pub injection_method: InjectionMethod,
     pub execution_method: CodeExecutionMethod,
-    pub cloak_thread: Option<bool>,
-    pub randomize_file_name: Option<bool>,
-    pub pe_cloaking: Option<PECloaking>,
+    pub cloak_thread: bool,
+    pub randomize_file_name: bool,
+    pub pe_cloaking: PECloaking,
+}
+
+impl Config {
+    fn max_stealth() -> Self {
+        Self {
+            injection_method: InjectionMethod::ManualMap,
+            execution_method: CodeExecutionMethod::ThreadHijack,
+            cloak_thread: true,
+            randomize_file_name: true,
+            pe_cloaking: PECloaking::Fake,
+        }
+    }
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            injection_method: InjectionMethod::LoadLibrary,
+            execution_method: CodeExecutionMethod::CreateRemoteThread,
+            cloak_thread: false,
+            randomize_file_name: false,
+            pe_cloaking: PECloaking::Keep,
+        }
+    }
 }
 
 pub struct Injector {

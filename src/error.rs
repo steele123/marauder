@@ -16,4 +16,6 @@ pub enum Error {
     MemoryWrite,
     #[error("Couldn't find function in the process")]
     ProcessAddress,
+    #[error("DLL path doesn't exist")]
+    DllPath,
 }

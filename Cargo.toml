@@ -17,6 +17,5 @@ internal = []
 injector = []
 
 [[example]]
-name = "external"
-path = "examples/external.rs"
-required-features = ["external"]
+name = "sample_dll"
+crate-type = ["cdylib"]

@@ -24,4 +24,4 @@ I would like for this to do as follows
 * Support for internal and external hacks (x86 or x64)
 * Keep the library small using features so people can decide what they need
 * Have all the required WINAPI functions that this library uses open for your use just in case you want to use them yourself
-* Support ImGUI for drawing graphics along with providing hooks for Direct3d / Vulkan
+* Support EGUI(Rust version of ImGUI) for drawing graphics along with providing hooks for Direct3d / Vulkan
