@@ -1,10 +1,5 @@
-use crate::windows::wrappers::{
-    close_handle, create_thread, disable_thread_library_calls, DWORD, HMODULE, LPVOID,
-};
-use bindings::Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
-
-/// Assists the process of creating a DllMain function so you don't fuck it up since its a odd way
-/// that you must do it
+/// Assists the process of creating a DllMain function so you don't fuck it up
+/// since its a odd way that you must do it
 #[macro_export]
 macro_rules! dll_main {
     ($func:expr) => {
@@ -22,7 +17,7 @@ macro_rules! dll_main {
                         0,
                         std::ptr::null_mut(),
                     ))
-                }
+                },
                 _ => (),
             };
         }
@@ -31,8 +26,8 @@ macro_rules! dll_main {
     };
 }
 
-/// Makes a function with a pointer to a memory address pretty useful for when you need to call a
-/// function that isn't yours.
+/// Makes a function with a pointer to a memory address pretty useful for when
+/// you need to call a function that isn't yours.
 ///
 /// # Example:
 ///
@@ -49,9 +44,7 @@ macro_rules! dll_main {
 /// }
 ///
 /// // Target Function 3
-/// fn return_type_function() -> bool {
-///     true
-/// }
+/// fn return_type_function() -> bool { true }
 /// ```
 ///
 /// ```rust
@@ -78,8 +71,9 @@ macro_rules! make_fn {
 /// Makes a function with a pointer that has no return type.
 ///
 /// # Safety:
-/// This function is very unsafe extremely unsafe due to the use of std::mem::transmute. Make sure
-/// you know what you are doing so you don't get a access violation which will crash your process.
+/// This function is very unsafe extremely unsafe due to the use of
+/// std::mem::transmute. Make sure you know what you are doing so you don't get
+/// a access violation which will crash your process.
 ///
 /// # Example:
 ///
@@ -117,7 +111,7 @@ macro_rules! make_void {
 /// # Example:
 ///
 /// ```rust
-/// ptr!(0x1337, usize) = 1337
+/// ptr!(0x1337, usize) = 1337 
 /// ```
 #[macro_export]
 macro_rules! ptr {

@@ -1,21 +1,25 @@
-use crate::error::Error;
-use crate::windows::wrappers::{
-    close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first,
-    process32_next, DWORD, DWORD_PTR,
-};
-use bindings::Windows::Win32::System::Diagnostics::ToolHelp::{
-    MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS,
-};
-use bindings::Windows::Win32::System::SystemServices::{CHAR, INVALID_HANDLE_VALUE};
-use std::ffi::CStr;
-use std::mem::size_of;
+use std::{ffi::CStr, mem::size_of};
 
-#[must_use]
+use bindings::Windows::Win32::{
+    Foundation::INVALID_HANDLE_VALUE,
+    System::{
+        Diagnostics::ToolHelp::{MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS},
+        SystemServices::CHAR,
+    },
+};
+
+use crate::{
+    error::Error,
+    windows::wrappers::{
+        close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first, process32_next, DWORD,
+        DWORD_PTR,
+    },
+};
+
 pub fn convert_windows_string<'a, const N: usize>(string: [CHAR; N]) -> Result<&'a str, Error> {
     unsafe { Ok(CStr::from_ptr(string.as_ptr() as *const i8).to_str()?) }
 }
 
-#[must_use]
 pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     let mut process_id: DWORD = 0;
 
@@ -53,7 +57,6 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     Ok(process_id)
 }
 
-#[must_use]
 pub fn get_module_base(process_id: DWORD, module_name: &str) -> Result<DWORD_PTR, Error> {
     let mut module_base_address: DWORD_PTR = 0x0;
 

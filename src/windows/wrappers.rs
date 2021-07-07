@@ -1,23 +1,28 @@
 #![allow(clippy::not_unsafe_ptr_arg_deref)]
 
-use bindings::Windows::Win32::System::Diagnostics::Debug::{ReadProcessMemory, WriteProcessMemory};
-use bindings::Windows::Win32::System::Diagnostics::ToolHelp::{
-    CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
-    CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
-};
-use bindings::Windows::Win32::System::Memory::{VirtualProtect, VirtualProtectEx, VirtualQueryEx};
-use bindings::Windows::Win32::System::SystemServices::{
-    DisableThreadLibraryCalls, FreeLibraryAndExitThread, GetModuleHandleA, BOOL, HANDLE, HINSTANCE,
-    LPTHREAD_START_ROUTINE, MEMORY_BASIC_INFORMATION, PAGE_TYPE, SECURITY_ATTRIBUTES,
-};
-use bindings::Windows::Win32::System::Threading::{
-    CreateRemoteThread, CreateThread, GetCurrentProcess, OpenProcess, WaitForSingleObject,
-    PROCESS_ACCESS_RIGHTS, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
-};
-use bindings::Windows::Win32::System::WindowsProgramming::CloseHandle;
-use bindings::Windows::Win32::UI::KeyboardAndMouseInput::GetAsyncKeyState;
-
 use std::os::raw::*;
+
+use bindings::Windows::Win32::{
+    Foundation::{CloseHandle, BOOL, HANDLE, HINSTANCE},
+    Security::SECURITY_ATTRIBUTES,
+    System::{
+        Diagnostics::{
+            Debug::{ReadProcessMemory, WriteProcessMemory},
+            ToolHelp::{
+                CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
+                CREATE_TOOLHELP_SNAPSHOT_FLAGS, MODULEENTRY32, PROCESSENTRY32,
+            },
+        },
+        LibraryLoader::{DisableThreadLibraryCalls, FreeLibraryAndExitThread, GetModuleHandleA},
+        Memory::{VirtualProtect, VirtualProtectEx, VirtualQueryEx, MEMORY_BASIC_INFORMATION, PAGE_PROTECTION_FLAGS},
+        SystemServices::LPTHREAD_START_ROUTINE,
+        Threading::{
+            CreateRemoteThread, CreateThread, GetCurrentProcess, OpenProcess, WaitForSingleObject, PROCESS_ACCESS_RIGHTS,
+            THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+        },
+    },
+    UI::KeyboardAndMouseInput::GetAsyncKeyState,
+};
 
 /// size_t is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
@@ -36,9 +41,7 @@ pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
 
-pub(crate) fn get_module_handle(module_name: &str) -> HINSTANCE {
-    unsafe { GetModuleHandleA(module_name) }
-}
+pub(crate) fn get_module_handle(module_name: &str) -> HINSTANCE { unsafe { GetModuleHandleA(module_name) } }
 
 pub(crate) fn virtual_query_ex(
     process: HANDLE,
@@ -49,16 +52,14 @@ pub(crate) fn virtual_query_ex(
     unsafe { VirtualQueryEx(process, address, buffer, length) }
 }
 
-pub(crate) fn get_async_key_state(key: i32) -> i16 {
-    unsafe { GetAsyncKeyState(key) }
-}
+pub(crate) fn get_async_key_state(key: i32) -> i16 { unsafe { GetAsyncKeyState(key) } }
 
 pub(crate) fn virtual_protect_ex(
     process: HANDLE,
     address: *mut c_void,
     size: usize,
-    new_protect: PAGE_TYPE,
-    old_protect: *mut PAGE_TYPE,
+    new_protect: PAGE_PROTECTION_FLAGS,
+    old_protect: *mut PAGE_PROTECTION_FLAGS,
 ) -> bool {
     unsafe { VirtualProtectEx(process, address, size, new_protect, old_protect).into() }
 }
@@ -66,8 +67,8 @@ pub(crate) fn virtual_protect_ex(
 pub(crate) fn virtual_protect(
     address: *mut c_void,
     size: usize,
-    new_protect: PAGE_TYPE,
-    old_protect: *mut PAGE_TYPE,
+    new_protect: PAGE_PROTECTION_FLAGS,
+    old_protect: *mut PAGE_PROTECTION_FLAGS,
 ) -> bool {
     unsafe { VirtualProtect(address, size, new_protect, old_protect).into() }
 }
@@ -118,13 +119,9 @@ pub(crate) fn create_thread(
     }
 }
 
-pub(crate) fn close_handle(handle: HANDLE) -> bool {
-    unsafe { CloseHandle(handle).into() }
-}
+pub(crate) fn close_handle(handle: HANDLE) -> bool { unsafe { CloseHandle(handle).into() } }
 
-pub(crate) fn get_current_process() -> HANDLE {
-    unsafe { GetCurrentProcess() }
-}
+pub(crate) fn get_current_process() -> HANDLE { unsafe { GetCurrentProcess() } }
 
 pub(crate) fn free_library_and_exit_thread(module_handle: HINSTANCE, exit_code: DWORD) {
     unsafe {
@@ -137,19 +134,12 @@ pub(crate) fn disable_thread_library_calls(library_module: HINSTANCE) -> bool {
 }
 
 /// Opens a process with the desired rights so you can perform actions upon it.
-pub(crate) fn open_process(
-    desired_access: PROCESS_ACCESS_RIGHTS,
-    inherit_handle: BOOL,
-    process_id: DWORD,
-) -> HANDLE {
+pub(crate) fn open_process(desired_access: PROCESS_ACCESS_RIGHTS, inherit_handle: BOOL, process_id: DWORD) -> HANDLE {
     unsafe { OpenProcess(desired_access, inherit_handle, process_id) }
 }
 
 /// Creates a snapshot of current processes and etc.
-pub(crate) fn create_tool_help32_snapshot(
-    flags: CREATE_TOOLHELP_SNAPSHOT_FLAGS,
-    process_id: DWORD,
-) -> HANDLE {
+pub(crate) fn create_tool_help32_snapshot(flags: CREATE_TOOLHELP_SNAPSHOT_FLAGS, process_id: DWORD) -> HANDLE {
     unsafe { CreateToolhelp32Snapshot(flags, process_id) }
 }
 
@@ -179,16 +169,7 @@ pub(crate) fn write_process_memory(
     size: size_t,
     number_of_bytes_written: *mut size_t,
 ) -> bool {
-    unsafe {
-        WriteProcessMemory(
-            process_handle,
-            base_address,
-            buffer,
-            size,
-            number_of_bytes_written,
-        )
-        .into()
-    }
+    unsafe { WriteProcessMemory(process_handle, base_address, buffer, size, number_of_bytes_written).into() }
 }
 
 /// Used to read the memory of a process.
@@ -199,14 +180,5 @@ pub(crate) fn read_process_memory(
     size: size_t,
     number_of_bytes_written: *mut size_t,
 ) -> bool {
-    unsafe {
-        ReadProcessMemory(
-            process_handle,
-            base_address,
-            buffer,
-            size,
-            number_of_bytes_written,
-        )
-        .into()
-    }
+    unsafe { ReadProcessMemory(process_handle, base_address, buffer, size, number_of_bytes_written).into() }
 }

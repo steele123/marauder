@@ -1,9 +1,11 @@
-use mem::injector::{Config, InjectionMethod, Injector};
-use mem::windows::utils::get_process_id;
+use mem::{
+    injector::{Config, InjectionMethod, Injector},
+    windows::utils::get_process_id,
+};
 
 fn main() {
-    let dll_path = std::env::var("dll-path").expect("You must provide a dll path");
-    let process_name = std::env::var("process-name").expect("You must give a process name");
+    let dll_path = std::env::var("dll_path").expect("You must provide a dll path");
+    let process_name = std::env::var("process_name").expect("You must give a process name");
 
     let path = std::path::Path::new(&dll_path);
     if !path.exists() {
