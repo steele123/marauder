@@ -11,7 +11,7 @@ fn main() {
         Windows::Win32::System::SystemServices::{
             DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH,
             LPTHREAD_START_ROUTINE,
-            CHAR},
+            CHAR, DLL_THREAD_ATTACH, DLL_THREAD_DETACH},
 
         Windows::Win32::System::Diagnostics::Debug::{ReadProcessMemory, WriteProcessMemory},
 
