@@ -1,35 +1,5 @@
-use crate::windows::wrappers::{
-    close_handle, create_thread, disable_thread_library_calls, DWORD, HMODULE, LPVOID,
-};
+pub(crate) use crate::windows::wrappers::{close_handle, create_thread, DWORD, HMODULE, LPVOID};
 use bindings::Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
-
-/// Assists the process of creating a DllMain function so you don't fuck it up since its a odd way
-/// that you must do it
-#[macro_export]
-macro_rules! dll_main {
-    ($func:expr) => {
-        #[no_mangle]
-        #[allow(non_snake_case)]
-        pub extern "system" fn DllMain(module: HMODULE, reason: DWORD, reserved: LPVOID) -> u32 {
-            match reason {
-                DLL_PROCESS_ATTACH => {
-                    disable_thread_library_calls(module);
-                    close_handle(create_thread(
-                        std::ptr::null_mut(),
-                        0,
-                        Some($func),
-                        module,
-                        0,
-                        std::ptr::null_mut(),
-                    ))
-                }
-                _ => (),
-            };
-        }
-
-        return true as u32;
-    };
-}
 
 /// Makes a function with a pointer to a memory address pretty useful for when you need to call a
 /// function that isn't yours.

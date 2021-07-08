@@ -132,10 +132,6 @@ pub(crate) fn free_library_and_exit_thread(module_handle: HINSTANCE, exit_code: 
     }
 }
 
-pub(crate) fn disable_thread_library_calls(library_module: HINSTANCE) -> bool {
-    unsafe { DisableThreadLibraryCalls(library_module).into() }
-}
-
 /// Opens a process with the desired rights so you can perform actions upon it.
 pub(crate) fn open_process(
     desired_access: PROCESS_ACCESS_RIGHTS,

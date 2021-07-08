@@ -5,4 +5,6 @@ fn main() {
         "I am a very dumb target process that will run forever!\nMy process id is {}",
         std::process::id()
     );
+
+    loop {}
 }

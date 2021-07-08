@@ -19,3 +19,7 @@ injector = []
 [[example]]
 name = "sample_dll"
 crate-type = ["cdylib"]
+
+[[example]]
+name = "injector"
+required-features = ["injector"]

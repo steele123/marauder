@@ -7,7 +7,7 @@ fn main() {
         Windows::Win32::System::SystemServices::{HANDLE, FALSE, GetModuleHandleW, BOOL, FreeLibraryAndExitThread,
             DisableThreadLibraryCalls, DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH, SECURITY_ATTRIBUTES,
             LPTHREAD_START_ROUTINE, INVALID_HANDLE_VALUE, PAGE_TYPE, MEMORY_BASIC_INFORMATION, GetModuleHandleA,
-            CHAR, PAGE_EXECUTE_READWRITE, PAGE_READWRITE, GetProcAddress},
+            CHAR, PAGE_EXECUTE_READWRITE, PAGE_READWRITE, GetProcAddress, DLL_THREAD_ATTACH, DLL_THREAD_DETACH},
 
         Windows::Win32::System::Diagnostics::Debug::{ReadProcessMemory, WriteProcessMemory},
 
