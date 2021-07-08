@@ -1,4 +1,5 @@
-//! This is just a very dumb process that does nothing besides run and wait to be injected into
+//! This is just a very dumb process that does nothing besides run and wait to
+//! be injected into
 
 fn main() {
     println!(
@@ -6,5 +7,7 @@ fn main() {
         std::process::id()
     );
 
-    loop {}
+    loop {
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
 }

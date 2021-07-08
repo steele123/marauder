@@ -19,9 +19,7 @@ use bindings::Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_P
 /// }
 ///
 /// // Target Function 3
-/// fn return_type_function() -> bool {
-///     true
-/// }
+/// fn return_type_function() -> bool { true }
 /// ```
 ///
 /// ```rust
@@ -48,8 +46,9 @@ macro_rules! make_fn {
 /// Makes a function with a pointer that has no return type.
 ///
 /// # Safety:
-/// This function is very unsafe extremely unsafe due to the use of std::mem::transmute. Make sure
-/// you know what you are doing so you don't get a access violation which will crash your process.
+/// This function is very unsafe extremely unsafe due to the use of
+/// std::mem::transmute. Make sure you know what you are doing so you don't get
+/// a access violation which will crash your process.
 ///
 /// # Example:
 ///
@@ -87,7 +86,7 @@ macro_rules! make_void {
 /// # Example:
 ///
 /// ```rust
-/// ptr!(0x1337, usize) = 1337
+/// ptr!(0x1337, usize) = 1337 
 /// ```
 #[macro_export]
 macro_rules! ptr {

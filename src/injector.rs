@@ -1,38 +1,47 @@
-use crate::error::Error;
-use crate::windows::wrappers::{open_process, DWORD, LPVOID};
-use bindings::Windows::Win32::System::Diagnostics::Debug::WriteProcessMemory;
-use bindings::Windows::Win32::System::Memory::{
-    VirtualAllocEx, VirtualFreeEx, MEM_COMMIT, MEM_RELEASE, MEM_RESERVE, VIRTUAL_ALLOCATION_TYPE,
+use std::{ffi::CString, ptr::null_mut};
+
+use bindings::Windows::Win32::{
+    Foundation::{CloseHandle, HINSTANCE, INVALID_HANDLE_VALUE, PSTR},
+    System::{
+        Diagnostics::Debug::WriteProcessMemory,
+        LibraryLoader::{GetModuleHandleA, GetProcAddress},
+        Memory::{VirtualAllocEx, VirtualFreeEx, MEM_COMMIT, MEM_RELEASE, MEM_RESERVE, PAGE_READWRITE},
+        Threading::PROCESS_ALL_ACCESS,
+    },
 };
-use bindings::Windows::Win32::System::SystemServices::{
-    GetModuleHandleA, GetProcAddress, HINSTANCE, INVALID_HANDLE_VALUE, PAGE_READWRITE, PSTR, PWSTR,
+
+use crate::{
+    error::Error,
+    windows::wrappers::{open_process, DWORD, LPVOID},
 };
-use bindings::Windows::Win32::System::Threading::PROCESS_ALL_ACCESS;
-use bindings::Windows::Win32::System::WindowsProgramming::CloseHandle;
-use std::ffi::CString;
-use std::ptr::null_mut;
 
 /// Several different methods of loading our library into the target process
 pub enum InjectionMethod {
     /// This is the typical method when safety is not really a concern
     LoadLibrary,
-    /// LoadLibraryEx is just a extended version of LoadLibrary which isn't always detected by anti-cheats
+    /// LoadLibraryEx is just a extended version of LoadLibrary which isn't
+    /// always detected by anti-cheats
     LoadLibraryEx,
-    /// By far the safest method of injection, this does mostly what the other methods do but is
-    /// instead just manually done by us rather than windows functions thus you are hidden from
-    /// ToolHelp32Snapshot and module crawling because windows didn't load them
+    /// By far the safest method of injection, this does mostly what the other
+    /// methods do but is instead just manually done by us rather than
+    /// windows functions thus you are hidden from ToolHelp32Snapshot and
+    /// module crawling because windows didn't load them
     ManualMap,
 }
 
-/// These are methods in which the injector will execute the code from the DLL that is injected
+/// These are methods in which the injector will execute the code from the DLL
+/// that is injected
 pub enum CodeExecutionMethod {
-    /// Creates a new thread on the target process which will have DllMain called
+    /// Creates a new thread on the target process which will have DllMain
+    /// called
     CreateRemoteThread,
-    /// Hijacks an existing thread, this is used for stealth if the anti cheat detects creating a new thread
+    /// Hijacks an existing thread, this is used for stealth if the anti cheat
+    /// detects creating a new thread
     ThreadHijack,
 }
 
-/// Choices of what to do with PE headers to protect ourselves and be more stealthy
+/// Choices of what to do with PE headers to protect ourselves and be more
+/// stealthy
 pub enum PECloaking {
     /// We will do nothing with PE headers
     Keep,
@@ -79,9 +88,7 @@ pub struct Injector {
 }
 
 impl Injector {
-    pub fn new(config: Config) -> Injector {
-        Injector { config }
-    }
+    pub fn new(config: Config) -> Injector { Injector { config } }
 
     pub fn inject(&self, process_id: u32, dll_path: &str) -> Result<(), Error> {
         let load_lib_address = get_fn_address("Kernel32.dll", "LoadLibraryA")?;
