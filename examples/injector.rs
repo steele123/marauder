@@ -9,12 +9,12 @@ fn main() {
 
     let path = std::path::Path::new(&dll_path);
     if !path.exists() {
-        panic!("The DLL doesn't exist at {}", &dll_path);
+        panic!("The DLL doesn't exist at {}", dll_path);
     }
     let config = Config::default();
     let injector = Injector::new(config);
 
-    let pid = get_process_id(&process_name).unwrap();
-    injector.inject(pid, &dll_path).unwrap();
+    //let pid = get_process_id("target_process.exe").unwrap();
+    injector.inject(101784, &dll_path).unwrap();
     println!("Successfully Injected!")
 }

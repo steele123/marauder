@@ -98,11 +98,12 @@ impl Injector {
 
         let process_handle = open_process(PROCESS_ALL_ACCESS, false.into(), process_id);
 
-        if process_handle == INVALID_HANDLE_VALUE {
+        if process_handle.is_invalid() {
             return Err(Error::Handle);
         }
 
         let path = unsafe {
+            // requires PROCESS_VM_OPERATION access right, this will just request an allocation to the memory of the process
             VirtualAllocEx(
                 process_handle,
                 null_mut(),
@@ -116,7 +117,9 @@ impl Injector {
             return Err(std::io::Error::last_os_error().into());
         }
 
+        // if this fails it will return 0 aka false
         let success: bool = unsafe {
+            // requires PROCESS_VM_WRITE and PROCESS_VM_OPERATION access rights
             WriteProcessMemory(
                 process_handle,
                 path,
@@ -132,7 +135,8 @@ impl Injector {
         }
 
         let thread_handle = unsafe {
-            type StartRoutine = unsafe extern "system" fn(LPVOID) -> DWORD;
+            type StartRoutine = extern "system" fn(LPVOID) -> DWORD;
+            // we memcpy the loadlib addy to this, its very unsafe though
             let start_routine: StartRoutine = std::mem::transmute(load_lib_address);
             bindings::Windows::Win32::System::Threading::CreateRemoteThread(
                 process_handle,
@@ -145,13 +149,11 @@ impl Injector {
             )
         };
 
-        if thread_handle == INVALID_HANDLE_VALUE {
-            unsafe { VirtualFreeEx(process_handle, path, dll_path_size, MEM_RELEASE) };
+        //unsafe { VirtualFreeEx(process_handle, path, dll_path_size, MEM_RELEASE) };
 
+        if thread_handle == INVALID_HANDLE_VALUE {
             return Err(Error::Handle);
         }
-
-        unsafe { VirtualFreeEx(process_handle, path, dll_path_size, MEM_RELEASE) };
         unsafe { CloseHandle(thread_handle) };
 
         Ok(())
@@ -164,7 +166,7 @@ fn get_fn_address<'a>(module_name: &str, fn_name: &str) -> Result<u64, Error> {
 
     let module_handle = unsafe { GetModuleHandleA(PSTR(mod_str.into_raw() as _)) };
 
-    if module_handle == HINSTANCE::NULL {
+    if module_handle.is_null() {
         return Err(Error::Handle);
     }
 
