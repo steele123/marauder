@@ -1,10 +1,6 @@
 use proc_macro::TokenStream;
-use proc_macro2::Span;
-use quote::{quote, quote_spanned, ToTokens};
-use syn::{
-    punctuated::Punctuated, token::Token, Abi, Attribute, AttributeArgs, FnArg, Ident, ItemFn, LitStr, Pat, PatType, Token,
-    Type,
-};
+use quote::quote;
+use syn::{AttributeArgs, ItemFn};
 
 #[proc_macro_attribute]
 pub fn dll_main(args: TokenStream, input: TokenStream) -> TokenStream {
@@ -28,7 +24,7 @@ pub fn dll_main(args: TokenStream, input: TokenStream) -> TokenStream {
     create_main(input, args, is_async).unwrap_or_else(|e| e.to_compile_error().into())
 }
 
-fn create_main(mut input: ItemFn, args: AttributeArgs, is_async: bool) -> Result<TokenStream, syn::Error> {
+fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<TokenStream, syn::Error> {
     let original_body = &input.block;
     let brace_token = input.block.brace_token;
     if !is_async {

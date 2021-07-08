@@ -1,40 +1,39 @@
 use std::{ffi::CStr, mem::size_of};
 
-use bindings::Windows::Win32::{
-    Foundation::INVALID_HANDLE_VALUE,
-    System::{
-        Diagnostics::ToolHelp::{MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS},
-        SystemServices::CHAR,
-    },
+use bindings::Windows::Win32::System::{
+    Diagnostics::ToolHelp::{TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS},
+    SystemServices::CHAR,
 };
 
 use crate::{
     error::Error,
     windows::wrappers::{
-        close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first, process32_next, DWORD,
-        DWORD_PTR,
+        close_handle, create_tool_help32_snapshot, module32_first, module32_next, process32_first, process32_next,
+        ModuleEntry32, ProcessEntry32, DWORD, DWORD_PTR,
     },
 };
 
+//// This will convert a pointer to a string into a string.
+/// # Errors
+/// `std::ffi::Error` if an error occurs.
 pub fn convert_windows_string<'a, const N: usize>(string: [CHAR; N]) -> Result<&'a str, Error> {
-    unsafe { Ok(CStr::from_ptr(string.as_ptr() as *const i8).to_str()?) }
+    unsafe { Ok(CStr::from_ptr(string.as_ptr().cast::<i8>()).to_str()?) }
 }
 
+/// `get_process_id` returns the ID of the process name.
+/// # Errors
+/// `error::Error` if an error occurs.
 pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     let mut process_id: DWORD = 0;
 
-    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPPROCESS, process_id);
+    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPPROCESS, process_id)?;
 
-    if snapshot == INVALID_HANDLE_VALUE {
-        return Err(Error::Handle);
-    }
-
-    let mut entry = PROCESSENTRY32 {
-        dwSize: size_of::<PROCESSENTRY32>() as u32,
-        ..Default::default()
+    let mut entry = ProcessEntry32 {
+        dwSize: size_of::<ProcessEntry32>() as u32,
+        ..ProcessEntry32::default()
     };
 
-    if process32_first(snapshot, &mut entry) {
+    if process32_first(snapshot, &mut entry).is_ok() {
         process_id = loop {
             let current_name = convert_windows_string(entry.szExeFile)?;
 
@@ -42,12 +41,12 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
                 break entry.th32ProcessID;
             }
 
-            if !process32_next(snapshot, &mut entry) {
+            if process32_next(snapshot, &mut entry).is_err() {
                 break 0;
             }
         };
 
-        close_handle(snapshot);
+        close_handle(snapshot)?;
     }
 
     if process_id == 0 {
@@ -57,17 +56,20 @@ pub fn get_process_id(process_name: &str) -> Result<DWORD, Error> {
     Ok(process_id)
 }
 
+/// `get_module_base` returns the base address of the module name.
+/// # Errors
+/// `error::Error` if an error occurs.
 pub fn get_module_base(process_id: DWORD, module_name: &str) -> Result<DWORD_PTR, Error> {
     let mut module_base_address: DWORD_PTR = 0x0;
 
-    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPMODULE, process_id);
+    let snapshot = create_tool_help32_snapshot(TH32CS_SNAPMODULE, process_id)?;
 
-    let mut entry = MODULEENTRY32 {
-        dwSize: size_of::<MODULEENTRY32>() as u32,
-        ..Default::default()
+    let mut entry = ModuleEntry32 {
+        dwSize: size_of::<ModuleEntry32>() as u32,
+        ..ModuleEntry32::default()
     };
 
-    if module32_first(snapshot, &mut entry) {
+    if module32_first(snapshot, &mut entry).is_ok() {
         module_base_address = loop {
             let current_name = convert_windows_string(entry.szModule)?;
 
@@ -75,12 +77,12 @@ pub fn get_module_base(process_id: DWORD, module_name: &str) -> Result<DWORD_PTR
                 break entry.modBaseAddr as DWORD_PTR;
             }
 
-            if module32_next(snapshot, &mut entry) {
+            if module32_next(snapshot, &mut entry).is_ok() {
                 break 0;
             }
         };
 
-        close_handle(snapshot);
+        close_handle(snapshot)?;
     }
 
     if module_base_address == 0 {
