@@ -1,0 +1,31 @@
+[package]
+name = "mem"
+version = "0.1.0"
+authors = ["Steele Scott <steele@steele.gg>"]
+edition = "2018"
+readme = "README.md"
+description = "A utility library for hacking/reading memory of processes/games."
+
+[dependencies]
+thiserror = "1.0.25"
+bindings = { path="./bindings" }
+windows = "0.14.0"
+
+[features]
+external = []
+internal = []
+injector = []
+
+[[example]]
+name = "sample_dll"
+path = "../examples/sample_dll.rs"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "injector"
+path = "../examples/injector.rs"
+required-features = ["injector"]
+
+[[example]]
+name = "target_process"
+path = "../examples/target_process.rs"
