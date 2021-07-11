@@ -1,27 +1,42 @@
 # mem-rs
-mem-rs aims to provide amazing support for internal/external process injection. As nice as game hacking in c++ can be, 
-I believe it would be even better inside of rust because you have things like macros to make a lot less boilerplate code.
-The main issue with game hacking in rust is without a library you need a lot of boilerplate code for every single project
-that you create. We can fully get rid of that issue and make things that required maybe 200 lines of boilerplate code that
-in maybe just 20 or so lines which is pretty amazing. You also won't need to deal with windows API functions which most 
-people hate doing. In c++ using a library for every game hacking project sucks, but in rust its perfect, it simplifies
-all of it, and you can opt in for things you want, so you code have a bunch of random things being compiled also you don't
-have to deal with the pain of aiding libraries in c++ because rust does libraries much better.
+mem-rs is a windows memory hacking library
 
-## Priority
-Currently, internal mem-rs is at the very bottom of the priority list, the injector is very high priority as well as internal
-mem-rs stuff.
+## Note
+This project is in active development the main focus is on DLL injection internal related stuff, external cheats are not the top 
+priority at this moment.
 
-## In Development
-I am using mem-rs for my own usage personally and would like to have it shared on GitHub because I couldn't find any memory 
-libraries doing the same things that I wanted from them. The APIs may change a lot, or they may change not at all just 
-please keep that in mind...
+# Examples
+Below will be a bunch of examples, if you want more indepth examples typically with comments you can check out the 
+examples directory
 
-## Plans
-Currently, I plan on making this project have anything you would need, so you have no need to touch c++ or windows APIs
-I would like for this to do as follows
-* Process injection (x86 or x64)
-* Support for internal and external hacks (x86 or x64)
-* Keep the library small using features so people can decide what they need
-* Have all the required WINAPI functions that this library uses open for your use just in case you want to use them yourself
-* Support EGUI(Rust version of ImGUI) for drawing graphics along with providing hooks for Direct3d / Vulkan
+## Easy DLL creation with minimal boilerplate
+```rust
+#[mem::dll_main]
+fn main() {
+    // This is a fully functional DLL ready for injection!
+    println!("I am a DLL inside the process, my module handle is: {}!", module_handle);
+}
+// We also support async! By default making your dll_main async you will be running on the tokio runtime
+#[mem::dll_main]
+async fn main() {
+    
+}
+```
+
+## Injection
+```rust
+fn main() {
+    let dll_path = std::env::var("dll_path").expect("You must provide a dll path");
+
+    let path = std::path::Path::new(&dll_path);
+    if !path.exists() {
+        panic!("The DLL doesn't exist at {}", dll_path);
+    }
+    let config = Config::default();
+    let injector = Injector::new(config);
+    
+    let pid = mem::windows::utils::get_process_id(&"target_process.exe").unwrap();
+    injector.inject(pid, &dll_path).unwrap();
+    println!("Successfully Injected!")
+}
+```
