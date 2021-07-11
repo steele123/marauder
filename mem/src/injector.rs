@@ -103,7 +103,8 @@ impl Injector {
         }
 
         let path = unsafe {
-            // requires PROCESS_VM_OPERATION access right, this will just request an allocation to the memory of the process
+            // requires PROCESS_VM_OPERATION access right, this will just request an
+            // allocation to the memory of the process
             VirtualAllocEx(
                 process_handle,
                 null_mut(),

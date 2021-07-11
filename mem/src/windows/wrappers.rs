@@ -41,6 +41,12 @@ pub type WCHAR = u16;
 pub type LPCWSTR = WCHAR;
 pub type HMODULE = isize;
 
+pub fn disable_thread_library_calls(module_handle: HMODULE) {
+    unsafe {
+        DisableThreadLibraryCalls(module_handle);
+    }
+}
+
 pub(crate) fn get_module_handle(module_name: &str) -> HINSTANCE { unsafe { GetModuleHandleA(module_name) } }
 
 pub(crate) fn virtual_query_ex(

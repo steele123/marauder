@@ -21,6 +21,8 @@ pub mod injector;
 #[cfg(any(feature = "internal"))]
 pub mod internal;
 
+pub mod hooks;
+
 #[macro_use]
 pub mod macros;
 

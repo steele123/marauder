@@ -34,6 +34,8 @@ fn create_main(mut input: ItemFn, args: AttributeArgs, is_async: bool) -> Result
     if !is_async {
         input.block = syn::parse2(quote! {
             {
+                mem::windows::wrappers::disable_thread_library_calls(module_handle);
+
                 match dw_reason {
                     1u32 => {
                         std::thread::spawn(move || {
@@ -52,6 +54,8 @@ fn create_main(mut input: ItemFn, args: AttributeArgs, is_async: bool) -> Result
     } else {
         input.block = syn::parse2(quote! {
             {
+                mem::windows::wrappers::disable_thread_library_calls(module_handle);
+
                 match dw_reason {
                     1u32 => {
                         let mut rt = tokio::runtime::Runtime::new().unwrap();

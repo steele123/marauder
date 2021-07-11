@@ -27,15 +27,15 @@ async fn main() {
 ```rust
 fn main() {
     let dll_path = std::env::var("dll_path").expect("You must provide a dll path");
-
     let path = std::path::Path::new(&dll_path);
     if !path.exists() {
         panic!("The DLL doesn't exist at {}", dll_path);
     }
+    // By default the config will use a LoadLibrary injection with no stealth
     let config = Config::default();
     let injector = Injector::new(config);
     
-    let pid = mem::windows::utils::get_process_id(&"target_process.exe").unwrap();
+    let pid = mem::windows::utils::get_process_id("target_process.exe").unwrap();
     injector.inject(pid, &dll_path).unwrap();
     println!("Successfully Injected!")
 }
