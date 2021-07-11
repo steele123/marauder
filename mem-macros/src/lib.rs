@@ -78,7 +78,7 @@ fn create_main(mut input: ItemFn, args: AttributeArgs, is_async: bool) -> Result
     // TODO: We probably want to make the type of the params of this function from
     //  our mem library's types
     input.sig =
-        syn::parse2(quote! {extern "system" fn DllMain(module_handle: isize, dw_reason: std::os::raw::c_ulong, reserved: *mut std::ffi::c_void) -> bool})
+        syn::parse2(quote! {extern "system" fn DllMain(module_handle: isize, dw_reason: std::os::raw::c_ulong, lp_reserved: *mut std::ffi::c_void) -> bool})
             .unwrap();
 
     // If we really cared I think we could just append a Attribute to input.attr for
