@@ -14,13 +14,22 @@ compile_error!("Currently only windows is supported");
 #[cfg(target_os = "windows")]
 pub mod windows;
 
-#[cfg(any(feature = "external"))]
+#[cfg(feature = "external")]
 pub mod external;
-#[cfg(any(feature = "injector"))]
+#[cfg(feature = "injector")]
 pub mod injector;
-#[cfg(any(feature = "internal"))]
+#[cfg(feature = "internal")]
 pub mod internal;
 
+// This just checks if the user wants any of the graphic libraries
+#[cfg(any(
+    feature = "vulkan",
+    feature = "opengl",
+    feature = "d3d9",
+    feature = "d3d10",
+    feature = "d3d11",
+    feature = "d3d12"
+))]
 pub mod hooks;
 
 #[macro_use]

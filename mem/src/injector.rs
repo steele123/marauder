@@ -90,6 +90,7 @@ pub struct Injector {
 impl Injector {
     pub fn new(config: Config) -> Injector { Injector { config } }
 
+    // TODO: Need to make the config properly work, currently it just uses a default
     pub fn inject(&self, process_id: u32, dll_path: &str) -> Result<(), Error> {
         let load_lib_address = get_fn_address("Kernel32.dll", "LoadLibraryA")?;
 

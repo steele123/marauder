@@ -6,6 +6,6 @@ pub(crate) use crate::windows::wrappers::{close_handle, create_thread, DWORD, HM
 mod cfg;
 
 cfg_macros! {
-#[macro_use]
-mod ptr;
-    }
+    #[macro_use]
+    mod ptr;
+}
