@@ -14,7 +14,7 @@ fn main() {
     let config = Config::default();
     let injector = Injector::new(config);
 
-    let pid = get_process_id("target_process.exe").unwrap();
+    let pid = get_process_id(&process_name).unwrap();
     injector.inject(pid, &dll_path).unwrap();
     println!("Successfully Injected!")
 }

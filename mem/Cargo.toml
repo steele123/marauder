@@ -7,18 +7,37 @@ readme = "README.md"
 description = "A utility library for hacking/reading memory of processes/games."
 
 [dependencies]
+mem-macros = { version = "0.1.0", path = "../mem-macros", optional = true }
 thiserror = "1.0.25"
 bindings = { path="./bindings" }
 windows = "0.14.0"
 
+[dev-dependencies]
+tokio = { version = "1.8.1", features = ["full"] }
+
 [features]
+default = ["full"]
+full = ["external", "internal", "injector", "macros"]
 external = []
 internal = []
 injector = []
+macros = ["mem-macros"]
+
+[[example]]
+name = "tokio_dll"
+path = "../examples/tokio_dll.rs"
+crate-type = ["cdylib"]
+required-features = ["macros"]
 
 [[example]]
 name = "sample_dll"
 path = "../examples/sample_dll.rs"
+crate-type = ["cdylib"]
+
+[[example]]
+name = "macro_dll"
+path = "../examples/macro_dll.rs"
+required-features = ["macros"]
 crate-type = ["cdylib"]
 
 [[example]]

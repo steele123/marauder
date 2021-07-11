@@ -1,7 +1,3 @@
-use bindings::Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
-
-pub(crate) use crate::windows::wrappers::{close_handle, create_thread, DWORD, HMODULE, LPVOID};
-
 /// Makes a function with a pointer to a memory address pretty useful for when
 /// you need to call a function that isn't yours.
 ///

@@ -1,7 +1,8 @@
+/*
 use std::ffi::c_void;
 
 use bindings::Windows::Win32::System::{
-    SystemServices::{FALSE, HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, PAGE_EXECUTE_READWRITE, PAGE_TYPE},
+    SystemServices::{HANDLE, INVALID_HANDLE_VALUE, LPTHREAD_START_ROUTINE, PAGE_EXECUTE_READWRITE, PAGE_TYPE},
     Threading::PROCESS_ALL_ACCESS,
     WindowsProgramming::INFINITE,
 };
@@ -129,3 +130,4 @@ impl Mem {
         virtual_protect_ex(self.process, address, size, unsafe { *old_protect }, old_protect);
     }
 }
+*/

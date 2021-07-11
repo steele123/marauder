@@ -15,3 +15,8 @@ pub mod internal;
 pub mod macros;
 
 pub mod error;
+
+// proc macros
+cfg_macros! {
+    pub use mem_macros::dll_main;
+}
