@@ -1,5 +1,3 @@
-use std::{ffi::c_void, os::raw::c_ulong};
-
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::{quote, quote_spanned, ToTokens};

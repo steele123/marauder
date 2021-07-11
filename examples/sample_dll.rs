@@ -12,7 +12,7 @@ fn hack_thread() {
 }
 
 #[no_mangle]
-pub extern "system" fn DllMain(module_handle: HMODULE, dw_reason: DWORD, reserved: LPVOID) -> bool {
+pub extern "system" fn DllMain(module_handle: HMODULE, dw_reason: DWORD, lp_reserved: LPVOID) -> bool {
     match dw_reason {
         1u32 => {
             std::thread::spawn(|| hack_thread());
