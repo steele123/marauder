@@ -36,9 +36,6 @@ use crate::error::Error;
 /// `size_t` is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
 pub type size_t = usize;
-/// used for pointers as types
-#[allow(non_camel_case_types)]
-pub type ptr = usize;
 
 // Windows Data Types
 
