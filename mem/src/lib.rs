@@ -5,7 +5,8 @@
     non_snake_case,
     dead_code,
     clippy::cast_possible_wrap,
-    clippy::upper_case_acronyms
+    clippy::upper_case_acronyms,
+    clippy::not_unsafe_ptr_arg_deref
 )]
 
 #[cfg(not(target_os = "windows"))]
