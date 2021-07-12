@@ -82,7 +82,7 @@ pub type VirtualAllocationType = VIRTUAL_ALLOCATION_TYPE;
 /// `SecurityAttributes` of a thread it will determine whether the return
 /// `Handle` can be inherited by the child processes. If this is null it will
 /// get a default by the system.
-pub type SecurityAttrivutes = SECURITY_ATTRIBUTES;
+pub type SecurityAttributes = SECURITY_ATTRIBUTES;
 /// A pointer to a function that will serve as the starting address for a
 /// thread.
 pub type LPThreadStartRoutine = LPTHREAD_START_ROUTINE;
@@ -220,7 +220,7 @@ pub fn wait_for_single_object(handle: Handle, milliseconds: u32) -> Result<WaitR
 /// If the function fails, `Error::ProcessNotFound` is returned.
 pub fn create_remote_thread(
     process: Handle,
-    thread_attributes: *mut SecurityAttrivutes,
+    thread_attributes: *mut SecurityAttributes,
     stack_size: usize,
     start_address: Option<LPThreadStartRoutine>,
     parameter: LPVOID,
@@ -254,7 +254,7 @@ pub fn create_remote_thread(
 /// # Errors
 /// If the function fails, `Error::ProcessNotFound` is returned.
 pub fn create_thread(
-    thread_attributes: *mut SecurityAttrivutes,
+    thread_attributes: *mut SecurityAttributes,
     stack_size: usize,
     start_address: Option<LPThreadStartRoutine>,
     parameter: LPVOID,
