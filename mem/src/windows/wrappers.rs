@@ -4,7 +4,7 @@
 //! Not all functions are designated as safe as without adding a significant
 //! amount of boilerplate will always be up to the caller to make sure UB can't
 //! happen. As time goes on we'll try to make as little functions unsafe.
-use std::os::raw::{c_ulong, c_void};
+use std::os::raw::c_void;
 
 use bindings::Windows::Win32::{
     Foundation::{CloseHandle, HANDLE, HINSTANCE},
@@ -33,7 +33,7 @@ use bindings::Windows::Win32::{
 
 use crate::error::Error;
 
-/// `size_t` is an usize which will be 4 bytes for x86 and 8 bytes for x64
+/// `size_t` is a usize which will be 4 bytes for x86 and 8 bytes for x64
 #[allow(non_camel_case_types)]
 pub type size_t = usize;
 /// used for pointers as types
@@ -41,12 +41,21 @@ pub type size_t = usize;
 pub type ptr = usize;
 
 // Windows Data Types
-pub type DWORD = c_ulong;
+
+/// `DWORD` is a double word, a word is 16-bits, the size is identical to the
+/// size of a u32.
+pub type DWORD = u32;
 #[allow(non_camel_case_types)]
+/// `DWORD_PTR` is a pointer as a usize so it will be 4 bytes for x86 and 8
+/// bytes for x64
 pub type DWORD_PTR = usize;
+/// `LPVOID` is a pointer to any type.
 pub type LPVOID = *mut c_void;
+/// `LPCVOID` is a pointer to a constant of any type.
 pub type LPCVOID = *const c_void;
+/// `WCHAR` is a 16-bit unicode character.
 pub type WCHAR = u16;
+/// `LPCWSTR` is a long pointer to a constant wide string.
 pub type LPCWSTR = WCHAR;
 
 /// `HandleInstance` is a handle to a module/instance. This handle is used for a
@@ -67,21 +76,33 @@ pub type PageProtectionFlags = PAGE_PROTECTION_FLAGS;
 pub type WaitReturnCause = WAIT_RETURN_CAUSE;
 // TODO: DOCS cc: steele
 pub type VirtualFreeType = VIRTUAL_FREE_TYPE;
-// TODO: DOCS cc: steele
+/// A type of memory allocation which could be a reserve, commit or change to a
+/// region in the virtual memory.
 pub type VirtualAllocationType = VIRTUAL_ALLOCATION_TYPE;
-// TODO: DOCS cc: steele
+/// `SecurityAttributes` of a thread it will determine whether the return
+/// `Handle` can be inherited by the child processes. If this is null it will
+/// get a default by the system.
 pub type SecurityAttrivutes = SECURITY_ATTRIBUTES;
-// TODO: DOCS cc: steele
+/// A pointer to a function that will serve as the starting address for a
+/// thread.
 pub type LPThreadStartRoutine = LPTHREAD_START_ROUTINE;
-// TODO: DOCS cc: steele
+/// Flags that control the creation of a thread.
 pub type ThreadCreationFlags = THREAD_CREATION_FLAGS;
-// TODO: DOCS cc: steele
+/// Access rights that the system will give you to the process, this is meant to
+/// be used with the `open_process` function which will open the process with
+/// the provided access rights.
 pub type ProcessAccessRights = PROCESS_ACCESS_RIGHTS;
-// TODO: DOCS cc: steele
+/// `ProcessEntry32` is an entry from a list of the processes in the system
+/// address space when the snapshot from `create_tool_help32_snapshot` was
+/// taken.
 pub type ProcessEntry32 = PROCESSENTRY32;
-// TODO: DOCS cc: steele
+/// `CreateToolhelpSnapshotFlags` are flags to indicate which parts of the
+/// system should be included in the snapshot for example you would use the flag
+/// TH32CS_SNAPMODULE to include the modules of the process.
 pub type CreateToolhelpSnapshotFlags = CREATE_TOOLHELP_SNAPSHOT_FLAGS;
-// TODO: DOCS cc: steele
+/// `ModuleEntry32` is used for crawling the modules of a process in most cases
+/// you will be just default its value dwSize because not initializing dwSize
+/// will make `module32_first` fail.
 pub type ModuleEntry32 = MODULEENTRY32;
 
 /// `get_module_handle` will get the handle of a module.
