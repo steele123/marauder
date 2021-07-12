@@ -255,7 +255,7 @@ pub fn create_remote_thread(
 /// process, use the `create_remote_thread` function.
 ///
 /// Providing none to `thread_attributes`, `thread_id`, or `parameter` will let
-//  us default the value with a null pointer.
+///  us default the value with a null pointer.
 ///
 /// # Errors
 /// If the function fails, `Error::ProcessNotFound` is returned.
