@@ -18,4 +18,8 @@ pub enum Error {
     ProcessAddress,
     #[error("DLL path doesn't exist")]
     DllPath,
+    #[error("You must enable the feature for that render type")]
+    RenderType,
+    #[error("Couldn't find the graphics rendering module!")]
+    RenderModule,
 }
