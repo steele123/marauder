@@ -210,6 +210,7 @@ pub fn wait_for_single_object(handle: Handle, milliseconds: u32) -> Result<WaitR
         Ok(res)
     }
 }
+
 /// Creates a thread that runs in the virtual address space of another process.
 ///
 /// Use the `CreateRemoteThreadEx` function to create a thread that runs in the
@@ -248,6 +249,7 @@ pub fn create_remote_thread(
         Ok(handle)
     }
 }
+
 /// Creates a thread to execute within the virtual address space of the calling
 /// process.
 ///
