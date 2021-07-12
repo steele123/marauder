@@ -446,12 +446,12 @@ pub fn get_proc_address(hmodule: HINSTANCE, lpprocname: &str) -> Result<usize, E
 /// If the function fails, `Error::MemoryError` is returned.
 pub fn virtual_alloc_ex(
     handle: Handle,
-    lpaddress: *mut c_void,
-    dwsize: usize,
-    flallocation: VirtualAllocationType,
-    flprotect: PageProtectionFlags,
+    address: *mut c_void,
+    size: usize,
+    allocation_type: VirtualAllocationType,
+    protection_flags: PageProtectionFlags,
 ) -> Result<*mut c_void, Error> {
-    let res = unsafe { VirtualAllocEx(handle, lpaddress, dwsize, flallocation, flprotect) };
+    let res = unsafe { VirtualAllocEx(handle, address, size, allocation_type, protection_flags) };
 
     if res.is_null() {
         Err(Error::MemoryError(unsafe { GetLastError().0 }))
@@ -466,12 +466,12 @@ pub fn virtual_alloc_ex(
 /// # Errors
 /// If the function fails, `Error::MemoryError` is returned.
 pub fn virtual_free_ex(
-    hprocess: Handle,
-    lpaddress: *mut c_void,
-    dwsize: usize,
-    dwfreetype: VirtualFreeType,
+    process_handle: Handle,
+    address: *mut c_void,
+    size: usize,
+    virtual_free_type: VirtualFreeType,
 ) -> Result<(), Error> {
-    let result = unsafe { VirtualFreeEx(hprocess, lpaddress, dwsize, dwfreetype) };
+    let result = unsafe { VirtualFreeEx(process_handle, address, size, virtual_free_type) };
     if result.as_bool() {
         Ok(())
     } else {
