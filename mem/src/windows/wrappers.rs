@@ -4,7 +4,7 @@
 //! Not all functions are designated as safe as without adding a significant
 //! amount of boilerplate will always be up to the caller to make sure UB can't
 //! happen. As time goes on we'll try to make as little functions unsafe.
-use std::os::raw::c_void;
+use std::{os::raw::c_void, ptr::null_mut};
 
 use bindings::Windows::Win32::{
     Foundation::{CloseHandle, HANDLE, HINSTANCE},
@@ -216,26 +216,29 @@ pub fn wait_for_single_object(handle: Handle, milliseconds: u32) -> Result<WaitR
 /// virtual address space of another process and optionally specify extended
 /// attributes.
 ///
+/// Providing none to `thread_attributes`, `thread_id`, or `parameter` will let
+/// us default the value with a null pointer.
+///
 /// # Errors
 /// If the function fails, `Error::ProcessNotFound` is returned.
 pub fn create_remote_thread(
     process: Handle,
-    thread_attributes: *mut SecurityAttributes,
+    thread_attributes: Option<*mut SecurityAttributes>,
     stack_size: usize,
     start_address: Option<LPThreadStartRoutine>,
-    parameter: LPVOID,
+    parameter: Option<LPVOID>,
     creation_flags: u32,
-    thread_id: *mut u32,
+    thread_id: Option<*mut u32>,
 ) -> Result<Handle, Error> {
     let handle = unsafe {
         CreateRemoteThread(
             process,
-            thread_attributes,
+            thread_attributes.unwrap_or(null_mut()),
             stack_size,
             start_address,
-            parameter,
+            parameter.unwrap_or(null_mut()),
             creation_flags,
-            thread_id,
+            thread_id.unwrap_or(null_mut()),
         )
     };
 
@@ -251,24 +254,27 @@ pub fn create_remote_thread(
 /// To create a thread that runs in the virtual address space of another
 /// process, use the `create_remote_thread` function.
 ///
+/// Providing none to `thread_attributes`, `thread_id`, or `parameter` will let
+//  us default the value with a null pointer.
+///
 /// # Errors
 /// If the function fails, `Error::ProcessNotFound` is returned.
 pub fn create_thread(
-    thread_attributes: *mut SecurityAttributes,
+    thread_attributes: Option<*mut SecurityAttributes>,
     stack_size: usize,
     start_address: Option<LPThreadStartRoutine>,
-    parameter: LPVOID,
+    parameter: Option<LPVOID>,
     creation_flags: ThreadCreationFlags,
-    thread_id: *mut u32,
+    thread_id: Option<*mut u32>,
 ) -> Result<Handle, Error> {
     let res = unsafe {
         CreateThread(
-            thread_attributes,
+            thread_attributes.unwrap_or(null_mut()),
             stack_size,
             start_address,
-            parameter,
+            parameter.unwrap_or(null_mut()),
             creation_flags,
-            thread_id,
+            thread_id.unwrap_or(null_mut()),
         )
     };
 
