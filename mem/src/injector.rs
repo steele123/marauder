@@ -97,20 +97,14 @@ impl Injector {
 
         let process_handle = open_process(PROCESS_ALL_ACCESS, false, process_id);
 
-        let path = virtual_alloc_ex(
-            process_handle,
-            null_mut(),
-            dll_path_size,
-            MEM_RESERVE | MEM_COMMIT,
-            PAGE_READWRITE,
-        )?;
+        let path = virtual_alloc_ex(process_handle, None, dll_path_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE)?;
 
-        write_process_memory(process_handle, path, dll_path.as_ptr() as LPVOID, dll_path_size, null_mut())?;
+        write_process_memory(process_handle, path, dll_path.as_ptr() as LPVOID, dll_path_size, None)?;
 
         let thread_handle = unsafe {
             type StartRoutine = extern "system" fn(LPVOID) -> DWORD;
             let start_routine: StartRoutine = std::mem::transmute(load_lib_address);
-            create_remote_thread(process_handle, null_mut(), 0, Some(start_routine), path, 0, null_mut())?
+            create_remote_thread(process_handle, None, 0, Some(start_routine), Some(path), 0, None)?
         };
 
         close_handle(thread_handle)?;

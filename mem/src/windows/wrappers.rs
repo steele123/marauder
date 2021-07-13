@@ -302,9 +302,10 @@ pub fn close_handle(handle: Handle) -> Result<(), Error> {
 #[must_use]
 pub fn get_current_process() -> Handle { unsafe { GetCurrentProcess() } }
 
-/// Decrements the reference count of a loaded dynamic-link library (DLL) by
-/// one, then calls `ExitThread` to terminate the calling thread. The function
-/// does not return.
+/// Firstly `FreeLibrary` is called which frees the DLL and if needed decrements
+/// the reference count, when the reference count reaches zero the module will
+/// be unloaded from the address space and the handle will no longer be valid
+/// then `ExitThread` will be called to terminate the calling thread.
 pub fn free_library_and_exit_thread(module_handle: HandleInstance, exit_code: DWORD) {
     unsafe {
         FreeLibraryAndExitThread(module_handle, exit_code);
@@ -394,9 +395,17 @@ pub fn write_process_memory(
     base_address: LPVOID,
     buffer: LPCVOID,
     size: size_t,
-    number_of_bytes_written: *mut size_t,
+    number_of_bytes_written: Option<*mut size_t>,
 ) -> Result<(), Error> {
-    let result = unsafe { WriteProcessMemory(process_handle, base_address, buffer, size, number_of_bytes_written) };
+    let result = unsafe {
+        WriteProcessMemory(
+            process_handle,
+            base_address,
+            buffer,
+            size,
+            number_of_bytes_written.unwrap_or(null_mut()),
+        )
+    };
     if result.as_bool() {
         Ok(())
     } else {
@@ -439,16 +448,18 @@ pub fn get_proc_address(hmodule: HINSTANCE, lpprocname: &str) -> Result<usize, E
 /// virtual address space of a specified process. The function initializes the
 /// memory it allocates to zero.
 ///
+/// If you provide none to `address` we will default it to a null pointer.
+///
 /// # Errors
 /// If the function fails, `Error::MemoryError` is returned.
 pub fn virtual_alloc_ex(
     handle: Handle,
-    address: *mut c_void,
+    address: Option<*mut c_void>,
     size: usize,
     allocation_type: VirtualAllocationType,
     protection_flags: PageProtectionFlags,
 ) -> Result<*mut c_void, Error> {
-    let res = unsafe { VirtualAllocEx(handle, address, size, allocation_type, protection_flags) };
+    let res = unsafe { VirtualAllocEx(handle, address.unwrap_or(null_mut()), size, allocation_type, protection_flags) };
 
     if res.is_null() {
         Err(Error::MemoryError(unsafe { GetLastError().0 }))
