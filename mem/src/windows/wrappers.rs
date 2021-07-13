@@ -313,7 +313,7 @@ pub fn free_library_and_exit_thread(module_handle: HandleInstance, exit_code: DW
 }
 
 /// Opens an existing local process object.
-pub(crate) fn open_process(desired_access: ProcessAccessRights, inherit_handle: bool, process_id: DWORD) -> Handle {
+pub fn open_process(desired_access: ProcessAccessRights, inherit_handle: bool, process_id: DWORD) -> Handle {
     unsafe { OpenProcess(desired_access, inherit_handle, process_id) }
 }
 
