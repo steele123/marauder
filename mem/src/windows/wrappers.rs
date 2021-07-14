@@ -10,6 +10,7 @@ use bindings::Windows::Win32::{
     Foundation::{CloseHandle, HANDLE, HINSTANCE},
     Security::SECURITY_ATTRIBUTES,
     System::{
+        Console::{AllocConsole, FreeConsole},
         Diagnostics::{
             Debug::{GetLastError, ReadProcessMemory, WriteProcessMemory},
             ToolHelp::{
@@ -301,6 +302,31 @@ pub fn close_handle(handle: Handle) -> Result<(), Error> {
 /// Retrieves a pseudo handle for the current process.
 #[must_use]
 pub fn get_current_process() -> Handle { unsafe { GetCurrentProcess() } }
+
+/// Allocates a console for the calling process. A process is only able to have
+/// one console, this function will fail if it already has a console. If you
+/// want to get rid of the existing console you should call our `free_console`
+/// function.
+pub fn alloc_console() -> Result<(), Error> {
+    let success = unsafe { AllocConsole() };
+
+    if success.as_bool() {
+        Ok(())
+    } else {
+        Err(Error::ConsoleAllocation(unsafe { GetLastError().0 }))
+    }
+}
+
+/// Frees a console from the calling process.
+pub fn free_console() -> Result<(), Error> {
+    let success = unsafe { FreeConsole() };
+
+    if success.as_bool() {
+        Ok(())
+    } else {
+        Err(Error::ConsoleDeallocation(unsafe { GetLastError().0 }))
+    }
+}
 
 /// Firstly `FreeLibrary` is called which frees the DLL and if needed decrements
 /// the reference count, when the reference count reaches zero the module will

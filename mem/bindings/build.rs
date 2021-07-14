@@ -6,6 +6,12 @@ fn main() {
 
         Windows::Win32::System::LibraryLoader::{GetModuleHandleW, FreeLibraryAndExitThread, DisableThreadLibraryCalls, GetModuleHandleA, GetProcAddress},
 
+        Windows::Win32::System::Console::{AllocConsole, FreeConsole},
+
+        Windows::Win32::Graphics::Direct3D9::{D3D_SDK_VERSION, Direct3DCreate9, D3DPRESENT_PARAMETERS, IDirect3D9},
+
+        Windows::Win32::UI::WindowsAndMessaging::{WNDCLASSEXW, CreateWindowExW, DestroyWindow, UnregisterClassW},
+
         Windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH, LPTHREAD_START_ROUTINE, CHAR, DLL_THREAD_ATTACH, DLL_THREAD_DETACH, CHAR},
 
         Windows::Win32::System::Diagnostics::Debug::{ReadProcessMemory, WriteProcessMemory, GetLastError},

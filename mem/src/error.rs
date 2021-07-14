@@ -26,6 +26,8 @@ pub enum Error {
     DllPath,
     #[error("You must enable the feature for that render type")]
     RenderType,
-    #[error("Couldn't find the graphics rendering module!")]
-    RenderModule,
+    #[error("Couldn't allocate a console for the process: {0}")]
+    ConsoleAllocation(u32),
+    #[error("Unable to deallocate the console from the process: {0}")]
+    ConsoleDeallocation(u32),
 }
