@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::error::{Error, Result};
 
 #[cfg(any(feature = "d3d9", feature = "d3d10", feature = "d3d11", feature = "d3d12"))]
 pub mod d3d;
@@ -18,10 +18,13 @@ pub enum RenderType {
     D3D12,
 }
 
-pub struct GraphicsHook;
+pub struct GraphicsHook {
+    method_table: Vec<*const usize>,
+}
 
 impl GraphicsHook {
-    pub fn new(render_type: RenderType) -> Result<Self, Error> {
+    /// Acquires the method table by creating a dummy device
+    pub fn new(render_type: RenderType) -> Result<Self> {
         match render_type {
             RenderType::OPENGL => {},
             RenderType::VULKAN => {},
@@ -30,4 +33,10 @@ impl GraphicsHook {
 
         Ok(GraphicsHook)
     }
+
+    // TODO: DOC
+    pub fn hook(index: u16) -> Result<()> {}
+
+    // TODO: DOC
+    pub fn unhook() -> Result<()> {}
 }

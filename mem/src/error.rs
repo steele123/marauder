@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+pub type Result<T> = std::result::Result<T, Error>;
+
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("Handle was invalid: {0}")]
@@ -30,4 +32,6 @@ pub enum Error {
     ConsoleAllocation(u32),
     #[error("Unable to deallocate the console from the process: {0}")]
     ConsoleDeallocation(u32),
+    #[error("Failed to create a DirectX dummy device")]
+    DummyDevice,
 }
