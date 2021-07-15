@@ -14,16 +14,23 @@ use bindings::Windows::Win32::{
 
 use crate::{
     error::{Error, Result},
-    hooks::RenderType,
+    hooks::{MethodTable, RenderType},
     windows::{
         utils::convert_windows_string,
         wrappers::{get_module_handle, get_proc_address, HandleInstance},
     },
 };
 
-const VTA_BLE_ELEMENTS: usize = 119;
+#[cfg(feature = "d3d9")]
+const D3D9_VTABLE_ELEMENTS: usize = 119;
+#[cfg(feature = "d3d10")]
+const D3D10_VTABLE_ELEMENTS: usize = 116;
+#[cfg(feature = "d3d11")]
+const D3D11_VTABLE_ELEMENTS: usize = 205;
+#[cfg(feature = "d3d12")]
+const D3D12_VTABLE_ELEMENTS: usize = 150;
 
-fn get_method_table(render_type: RenderType) -> Result<Vec<*const usize>> {
+pub fn get_method_table(render_type: RenderType) -> Result<Vec<MethodTable>> {
     let window_class = WNDCLASSEXW {
         cbSize: std::mem::size_of::<WNDCLASSEXW>() as u32,
         style: CS_HREDRAW | CS_VREDRAW,
@@ -94,7 +101,7 @@ fn get_method_table(render_type: RenderType) -> Result<Vec<*const usize>> {
             // size is the size of the elements, not the bytes this is similar to calloc in
             // c++
             let method_table = unsafe {
-                std::slice::from_raw_parts((device_interface as *const *const *const usize).read(), VTABLE_ELEMENTS)
+                std::slice::from_raw_parts((device_interface as *const *const MethodTable).read(), D3D9_VTABLE_ELEMENTS)
             }
             .to_vec();
             if method_table.is_empty() {
