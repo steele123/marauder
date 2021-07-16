@@ -1,10 +1,21 @@
-use std::{ffi::CString, ptr::null_mut};
+use std::{
+    ffi::CString,
+    ptr::{null, null_mut},
+};
 
 use bindings::Windows::Win32::{
     Foundation::HWND,
-    Graphics::Direct3D9::{
-        Direct3DCreate9, IDirect3D9, IDirect3DDevice9, D3DCREATE_SOFTWARE_VERTEXPROCESSING, D3DDEVTYPE_HAL, D3DFMT_UNKNOWN,
-        D3DMULTISAMPLE_NONE, D3DPRESENT_PARAMETERS, D3DSWAPEFFECT_DISCARD, D3D_SDK_VERSION,
+    Graphics::{
+        Direct3D10::{D3D10CreateDeviceAndSwapChain, D3D10_DRIVER_TYPE_HARDWARE, D3D10_SDK_VERSION},
+        Direct3D9::{
+            Direct3DCreate9, IDirect3D9, IDirect3DDevice9, D3DCREATE_SOFTWARE_VERTEXPROCESSING, D3DDEVTYPE_HAL,
+            D3DFMT_UNKNOWN, D3DMULTISAMPLE_NONE, D3DPRESENT_PARAMETERS, D3DSWAPEFFECT_DISCARD, D3D_SDK_VERSION,
+        },
+        Dxgi::{
+            CreateDXGIFactory, IDXGIAdapter, IDXGIFactory, DXGI_FORMAT, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_MODE_DESC,
+            DXGI_MODE_SCALING_UNSPECIFIED, DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED, DXGI_RATIONAL, DXGI_SAMPLE_DESC,
+            DXGI_SWAP_CHAIN_DESC, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH, DXGI_SWAP_EFFECT_DISCARD,
+        },
     },
     UI::WindowsAndMessaging::{
         CreateWindowExW, DestroyWindow, UnregisterClassW, CS_HREDRAW, CS_VREDRAW, WNDCLASSEXW, WS_EX_APPWINDOW,
@@ -63,7 +74,7 @@ pub fn get_method_table(render_type: RenderType) -> Result<Vec<MethodTable>> {
         )
     };
 
-    return match render_type {
+    let method_table = match render_type {
         RenderType::D3D9 => {
             let direct3d9 = unsafe { Direct3DCreate9(D3D_SDK_VERSION).unwrap() };
             let params = D3DPRESENT_PARAMETERS {
@@ -110,9 +121,66 @@ pub fn get_method_table(render_type: RenderType) -> Result<Vec<MethodTable>> {
 
             Ok(method_table)
         },
-        RenderType::D3D10 => {},
+        RenderType::D3D10 => unsafe {
+            let factory = CreateDXGIFactory::<IDXGIFactory>();
+            if factory.is_err() {
+                return Err(Error::DummyDevice);
+            }
+            let adapter: *const IDXGIAdapter = null();
+            factory.unwrap().EnumAdapters(&adapter as u32);
+            let refresh_rate = DXGI_RATIONAL {
+                Numerator: 60,
+                Denominator: 1,
+            };
+
+            let buffer_desc = DXGI_MODE_DESC {
+                Width: 100,
+                Height: 100,
+                RefreshRate: refresh_rate,
+                Format: DXGI_FORMAT_R8G8B8A8_UNORM,
+                ScanlineOrdering: DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
+                Scaling: DXGI_MODE_SCALING_UNSPECIFIED,
+            };
+            let sample_desc = DXGI_SAMPLE_DESC { Count: 1, Quality: 0 };
+            let swap_chain_desc = DXGI_SWAP_CHAIN_DESC {
+                BufferDesc: buffer,
+                SampleDesc: sample,
+                BufferUsage: 32,
+                BufferCount: 1,
+                OutputWindow: window,
+                Windowed: true.into(),
+                SwapEffect: DXGI_SWAP_EFFECT_DISCARD,
+                Flags: DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH.0 as u32,
+            };
+
+            let swap_chain = null_mut();
+            let device = null_mut();
+
+            D3D10CreateDeviceAndSwapChain(
+                adapter,
+                D3D10_DRIVER_TYPE_HARDWARE,
+                null(),
+                0,
+                D3D10_SDK_VERSION,
+                &swap_chain_desc as *mut DXGI_SWAP_CHAIN_DESC,
+                swap_chain,
+                device,
+            )
+            .unwrap();
+        },
         RenderType::D3D11 => {},
         RenderType::D3D12 => {},
         _ => unreachable!(),
+    };
+
+    destroy_class(&window_class, &window);
+
+    method_table
+}
+
+fn destroy_class(class: &WNDCLASSEXW, window: &HWND) {
+    unsafe {
+        DestroyWindow(window);
+        UnregisterClassW(class.lpszClassName, class.hInstance);
     };
 }
