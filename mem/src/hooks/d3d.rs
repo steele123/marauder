@@ -7,6 +7,10 @@ use bindings::Windows::Win32::{
     Foundation::HWND,
     Graphics::{
         Direct3D10::{D3D10CreateDeviceAndSwapChain, D3D10_DRIVER_TYPE_HARDWARE, D3D10_SDK_VERSION},
+        Direct3D11::{
+            D3D11CreateDeviceAndSwapChain, D3D11_CREATE_DEVICE_FLAG, D3D11_SDK_VERSION, D3D_DRIVER_TYPE_HARDWARE,
+            D3D_FEATURE_LEVEL, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_11_0,
+        },
         Direct3D9::{
             Direct3DCreate9, IDirect3D9, IDirect3DDevice9, D3DCREATE_SOFTWARE_VERTEXPROCESSING, D3DDEVTYPE_HAL,
             D3DFMT_UNKNOWN, D3DMULTISAMPLE_NONE, D3DPRESENT_PARAMETERS, D3DSWAPEFFECT_DISCARD, D3D_SDK_VERSION,
@@ -168,7 +172,51 @@ pub fn get_method_table(render_type: RenderType) -> Result<Vec<MethodTable>> {
             )
             .unwrap();
         },
-        RenderType::D3D11 => {},
+        RenderType::D3D11 => unsafe {
+            let feature_levels = vec![D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_11_0];
+            let refresh_rate = DXGI_RATIONAL {
+                Numerator: 60,
+                Denominator: 1,
+            };
+            let buffer_desc = DXGI_MODE_DESC {
+                Width: 100,
+                Height: 100,
+                RefreshRate: refresh_rate,
+                Format: DXGI_FORMAT_R8G8B8A8_UNORM,
+                ScanlineOrdering: DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
+                Scaling: DXGI_MODE_SCALING_UNSPECIFIED,
+            };
+            let sample_desc = DXGI_SAMPLE_DESC { Count: 1, Quality: 0 };
+            let swap_chain_desc = DXGI_SWAP_CHAIN_DESC {
+                BufferDesc: buffer_desc,
+                SampleDesc: sample_desc,
+                BufferUsage: 32,
+                BufferCount: 1,
+                OutputWindow: window,
+                Windowed: true.into(),
+                SwapEffect: DXGI_SWAP_EFFECT_DISCARD,
+                Flags: DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH.0 as u32,
+            };
+            let swap_chain = null_mut();
+            let device = null_mut();
+            let context = null_mut();
+
+            D3D11CreateDeviceAndSwapChain(
+                null_mut(),
+                D3D_DRIVER_TYPE_HARDWARE,
+                null_mut(),
+                D3D11_CREATE_DEVICE_FLAG(0),
+                feature_levels.as_ptr(),
+                2,
+                D3D11_SDK_VERSION,
+                swap_chain_desc as *const DXGI_SWAP_CHAIN_DESC,
+                swap_chain,
+                device,
+                feature_level,
+                context,
+            )
+            .unwrap();
+        },
         RenderType::D3D12 => {},
         _ => unreachable!(),
     };
