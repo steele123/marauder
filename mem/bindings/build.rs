@@ -17,7 +17,7 @@ fn main() {
         // D3D11
         Windows::Win32::Graphics::Direct3D11::{D3D11CreateDeviceAndSwapChain, D3D_FEATURE_LEVEL, D3D_FEATURE_LEVEL, D3D11_SDK_VERSION, D3D11_CREATE_DEVICE_FLAG},
         // D3D12
-        Windows::Win32::Graphics::Direct3D12::{D3D12CreateDevice, ID3D12Device, D3D12_COMMAND_QUEUE_DESC, ID3D12CommandQueue, ID3D12CommandAllocator, ID3D12GraphicsCommandList},
+        Windows::Win32::Graphics::Direct3D12::{D3D12CreateDevice, ID3D12Device, D3D12_COMMAND_QUEUE_DESC, ID3D12CommandQueue, ID3D12CommandAllocator, ID3D12GraphicsCommandList, ID3D12Device},
 
         Windows::Win32::UI::WindowsAndMessaging::{WNDCLASSEXW, CreateWindowExW, DestroyWindow, UnregisterClassW},
 
