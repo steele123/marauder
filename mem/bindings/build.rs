@@ -2,7 +2,7 @@ fn main() {
     windows::build!(
         Windows::Win32::Foundation::{INVALID_HANDLE_VALUE, CloseHandle},
 
-        Windows::Win32::System::Threading::{OpenProcess, GetCurrentProcess, PROCESS_ACCESS_RIGHTS,CreateThread, THREAD_CREATION_FLAGS, CreateRemoteThread, WaitForSingleObject, PROCESS_ACCESS_RIGHTS},
+        Windows::Win32::System::Threading::{OpenProcess, GetCurrentProcess, GetProcessId, PROCESS_ACCESS_RIGHTS,CreateThread, THREAD_CREATION_FLAGS, CreateRemoteThread, WaitForSingleObject, PROCESS_ACCESS_RIGHTS},
 
         Windows::Win32::System::LibraryLoader::{GetModuleHandleW, FreeLibraryAndExitThread, DisableThreadLibraryCalls, GetModuleHandleA, GetProcAddress},
 
