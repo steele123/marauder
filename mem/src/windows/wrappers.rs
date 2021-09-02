@@ -25,8 +25,8 @@ use bindings::Windows::Win32::{
         },
         SystemServices::LPTHREAD_START_ROUTINE,
         Threading::{
-            CreateRemoteThread, CreateThread, GetCurrentProcess, OpenProcess, WaitForSingleObject, PROCESS_ACCESS_RIGHTS,
-            THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
+            CreateRemoteThread, CreateThread, GetCurrentProcess, GetProcessId, OpenProcess, WaitForSingleObject,
+            PROCESS_ACCESS_RIGHTS, THREAD_CREATION_FLAGS, WAIT_RETURN_CAUSE,
         },
     },
     UI::KeyboardAndMouseInput::GetAsyncKeyState,
@@ -528,5 +528,19 @@ pub fn disable_thread_library_calls(module_handle: HandleInstance) -> Result<(),
         Ok(())
     } else {
         Err(Error::Handle(unsafe { GetLastError().0 }))
+    }
+}
+
+/// Will return a PID for the Handle it is given.
+///
+/// # Errors
+/// On a PID of zero will return an error.
+pub fn get_process_id(handle: Handle) -> Result<u32, Error> {
+    let result = unsafe { GetProcessId(handle) };
+
+    if result == 0 {
+        Err(Error::Handle(unsafe { GetLastError().0 }))
+    } else {
+        Ok(result)
     }
 }
