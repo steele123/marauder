@@ -7,13 +7,13 @@ readme = "README.md"
 description = "A utility library for hacking/reading memory of processes/games."
 
 [dependencies]
-mem-macros = { version = "0.1.0", path = "../mem-macros", optional = true }
-thiserror = "1.0.26"
+mem-macros = { path = "../mem-macros", optional = true }
+thiserror = "1.0.28"
 bindings = { path="./bindings" }
-windows = "0.18.0"
+windows = "0.19.0"
 
 [dev-dependencies]
-tokio = { version = "1.9.0", features = ["full"] }
+tokio = { version = "1.11.0", features = ["full"] }
 
 [features]
 default = ["full"]

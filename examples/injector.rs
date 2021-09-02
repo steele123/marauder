@@ -1,5 +1,5 @@
 use mem::{
-    injector::{Config, InjectionMethod, Injector},
+    injector::{Config, Injector},
     windows::utils::get_process_id,
 };
 

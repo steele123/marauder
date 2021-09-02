@@ -30,7 +30,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     if !is_async {
         input.block = syn::parse2(quote! {
             {
-                mem::windows::wrappers::disable_thread_library_calls(module_handle);
+                mem::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
 
                 match dw_reason {
                     1u32 => {
@@ -50,7 +50,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     } else {
         input.block = syn::parse2(quote! {
             {
-                mem::windows::wrappers::disable_thread_library_calls(module_handle);
+                mem::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
 
                 match dw_reason {
                     1u32 => {
@@ -76,7 +76,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     // TODO: We probably want to make the type of the params of this function from
     //  our mem library's types
     input.sig =
-        syn::parse2(quote! {extern "system" fn DllMain(module_handle: isize, dw_reason: std::os::raw::c_ulong, lp_reserved: *mut std::ffi::c_void) -> bool})
+        syn::parse2(quote! {extern "system" fn DllMain(module_handle: mem::windows::wrappers::HandleInstance, dw_reason: std::os::raw::c_ulong, lp_reserved: *mut std::ffi::c_void) -> bool})
             .unwrap();
 
     // If we really cared I think we could just append a Attribute to input.attr for

@@ -7,6 +7,7 @@ macro_rules! cfg_macros {
     }
 }
 
+#[allow(unused)]
 macro_rules! cfg_injector {
         ($($item:item)*) => {
         $(
@@ -16,6 +17,7 @@ macro_rules! cfg_injector {
     }
 }
 
+#[allow(unused)]
 macro_rules! cfg_internal {
         ($($item:item)*) => {
         $(
@@ -25,6 +27,7 @@ macro_rules! cfg_internal {
     }
 }
 
+#[allow(unused)]
 macro_rules! cfg_external {
         ($($item:item)*) => {
         $(
