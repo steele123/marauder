@@ -7,7 +7,7 @@
 fn main() {
     // module_handle is exposed from our macro, so is dw_reason, and also
     // lp_reserved
-    println!("Hi from the macro dll, module_handle: {}", module_handle);
+    println!("Hi from the macro dll, module_handle: {:?}", module_handle);
 }
 
 // The code above will expand to roughly

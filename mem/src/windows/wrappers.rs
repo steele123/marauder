@@ -96,7 +96,7 @@ pub type ProcessAccessRights = PROCESS_ACCESS_RIGHTS;
 pub type ProcessEntry32 = PROCESSENTRY32;
 /// `CreateToolhelpSnapshotFlags` are flags to indicate which parts of the
 /// system should be included in the snapshot for example you would use the flag
-/// TH32CS_SNAPMODULE to include the modules of the process.
+/// `TH32CS_SNAPMODULE` to include the modules of the process.
 pub type CreateToolhelpSnapshotFlags = CREATE_TOOLHELP_SNAPSHOT_FLAGS;
 /// `ModuleEntry32` is used for crawling the modules of a process in most cases
 /// you will be just default its value dwSize because not initializing dwSize
@@ -307,6 +307,7 @@ pub fn get_current_process() -> Handle { unsafe { GetCurrentProcess() } }
 /// one console, this function will fail if it already has a console. If you
 /// want to get rid of the existing console you should call our `free_console`
 /// function.
+/// # Errors
 pub fn alloc_console() -> Result<(), Error> {
     let success = unsafe { AllocConsole() };
 
@@ -318,6 +319,7 @@ pub fn alloc_console() -> Result<(), Error> {
 }
 
 /// Frees a console from the calling process.
+/// # Errors
 pub fn free_console() -> Result<(), Error> {
     let success = unsafe { FreeConsole() };
 
@@ -339,6 +341,7 @@ pub fn free_library_and_exit_thread(module_handle: HandleInstance, exit_code: DW
 }
 
 /// Opens an existing local process object.
+#[must_use]
 pub fn open_process(desired_access: ProcessAccessRights, inherit_handle: bool, process_id: DWORD) -> Handle {
     unsafe { OpenProcess(desired_access, inherit_handle, process_id) }
 }

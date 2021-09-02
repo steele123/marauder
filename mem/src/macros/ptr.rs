@@ -7,7 +7,7 @@
 /// ```rust
 /// // Target Function 1
 /// fn hello_world(hello: &str) {
-///     println!(hello);
+///     println!("{}", hello);
 /// }
 ///
 /// // Target Function 2
@@ -20,8 +20,9 @@
 /// ```
 ///
 /// ```rust
+/// use mem::make_fn;
 /// // Target 1
-/// let hello_world_void_function = make_fn!(0x1337, (), "Hello World");
+/// let hello_world_void_function = make_fn!(0x1337, (), &str);
 /// // Target 2
 /// let void_no_params_function = make_fn!(0x6969);
 /// // Target 3
@@ -44,8 +45,8 @@ macro_rules! make_fn {
 ///
 /// # Safety:
 /// This function is very unsafe extremely unsafe due to the use of
-/// std::mem::transmute. Make sure you know what you are doing so you don't get
-/// a access violation which will crash your process.
+/// `std::mem::transmute`. Make sure you know what you are doing so you don't
+/// get a access violation which will crash your process.
 ///
 /// # Example:
 ///
@@ -53,7 +54,7 @@ macro_rules! make_fn {
 /// ```rust
 /// // Target Function 1
 /// fn hello_world(hello: &str) {
-///     println!(hello);
+///     println!("{}", hello);
 /// }
 ///
 /// // Target Function 2
@@ -63,8 +64,9 @@ macro_rules! make_fn {
 /// ```
 ///
 /// ```rust
+/// use mem::make_void;
 /// // Target 1
-/// let hello_world = make_void!(0x1337, "Hello World");
+/// let hello_world = make_void!(0x1337, &str);
 /// // Target 2, this is the same as using make_fn!(0x6969);
 /// let void_function = make_void!(0x6969);
 /// ```
@@ -83,7 +85,10 @@ macro_rules! make_void {
 /// # Example:
 ///
 /// ```rust
-/// ptr!(0x1337, usize) = 1337 
+/// use mem::ptr;
+/// unsafe {
+///     ptr!(0x1337, usize);
+/// }
 /// ```
 #[macro_export]
 macro_rules! ptr {
