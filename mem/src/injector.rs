@@ -1,4 +1,4 @@
-use bindings::Windows::Win32::System::{
+use windows::Win32::System::{
     Memory::{MEM_COMMIT, MEM_RESERVE, PAGE_READWRITE},
     Threading::PROCESS_ALL_ACCESS,
 };
