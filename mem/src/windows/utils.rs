@@ -1,8 +1,8 @@
 use std::{ffi::CStr, mem::size_of};
 
-use bindings::Windows::Win32::System::{
-    Diagnostics::ToolHelp::{TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS},
-    SystemServices::CHAR,
+use windows::Win32::{
+    Foundation::CHAR,
+    System::Diagnostics::ToolHelp::{TH32CS_SNAPMODULE, TH32CS_SNAPPROCESS},
 };
 
 use crate::{
