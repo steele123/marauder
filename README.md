@@ -3,13 +3,13 @@ marauder is a windows (maybe eventually other OS) game hacking (kinda?) library,
 create DLLs and inject them into processes. It also provides some utilities for reading/writing memory and currently
 plans to support belong D3D hooks of all kinds.
 
-# Checklists
+## Checklists
 - [✅] DLL creation
 - [✅] Simple Injection
 - [✅] Utility functions for reading/writing memory
 - [⏳] D3D hooks
 
-# Install
+## Install
 ```toml
 [dependencies]
 marauder = "0.1.0"
@@ -19,7 +19,7 @@ marauder = "0.1.0"
 marauder-macros = "0.1.0"
 ```
 
-# Examples
+## Examples
 Below will be a bunch of examples, if you want more indepth examples typically with comments you can check out the 
 examples directory
 

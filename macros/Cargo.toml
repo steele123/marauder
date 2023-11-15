@@ -7,6 +7,7 @@ categories = ["games"]
 description = "A macro for generating DLLs for memory hacking"
 license = "MIT"
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
+readme = "README.md"
 
 [lib]
 proc-macro = true
@@ -15,3 +16,8 @@ proc-macro = true
 syn = { version = "1.0.75", features = ["full"] }
 quote = "1.0.9"
 proc-macro2 = "1.0.29"
+
+[[example]]
+name = "only-dll"
+path = "../examples/only-dll.rs"
+crate-type = ["cdylib"]
