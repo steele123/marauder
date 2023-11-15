@@ -1,9 +1,6 @@
 # mem-rs
 mem-rs is a windows memory hacking library
 
-## Note
-This project is still planned on my roadmap, but is not currently in development actively, I will be revisiting it as soon as I am able to financially though. You can also see this [issue](https://github.com/cat419/mem-rs/issues/11).
-
 # Examples
 Below will be a bunch of examples, if you want more indepth examples typically with comments you can check out the 
 examples directory
