@@ -1,11 +1,11 @@
 use crate::windows::wrappers::DWORD_PTR;
 
-pub struct Mem {
+pub struct Marauder {
     // module_base_address is typically not a usize but I want it to be added to pointers without casts
     pub module_base_address: DWORD_PTR,
 }
 
-impl Mem {
+impl Marauder {
     /*
     fn new(optional_module_name: Option<&str>) -> Result<Self> {
         let module_base_address = match optional_module_name {

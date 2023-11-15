@@ -1,5 +1,5 @@
 [package]
-name = "mem-macros"
+name = "marauder-macros"
 version = "0.1.0"
 edition = "2018"
 repository = "https://github.com/steele123/mem-rs"

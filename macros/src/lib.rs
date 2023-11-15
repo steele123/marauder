@@ -30,7 +30,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     if !is_async {
         input.block = syn::parse2(quote! {
             {
-                mem::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
+                marauder::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
 
                 match dw_reason {
                     1u32 => {
@@ -50,7 +50,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     } else {
         input.block = syn::parse2(quote! {
             {
-                mem::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
+                marauder::windows::wrappers::disable_thread_library_calls(module_handle).unwrap();
 
                 match dw_reason {
                     1u32 => {

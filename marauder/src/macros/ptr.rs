@@ -20,7 +20,7 @@
 /// ```
 ///
 /// ```rust
-/// use mem::make_fn;
+/// use marauder::make_fn;
 /// // Target 1
 /// let hello_world_void_function = make_fn!(0x1337, (), &str);
 /// // Target 2
@@ -85,7 +85,7 @@ macro_rules! make_void {
 /// # Example:
 ///
 /// ```rust
-/// use mem::ptr;
+/// use marauder::ptr;
 /// unsafe {
 ///     ptr!(0x1337, usize);
 /// }

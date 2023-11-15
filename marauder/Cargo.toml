@@ -4,13 +4,13 @@ version = "0.1.0"
 authors = ["Steele Scott <steele@catlab.gg>", "Tyler Hill <tyler@oxide.fi>"]
 edition = "2018"
 readme = "../README.md"
-repository = "https://github.com/steele123/mem-rs"
+repository = "https://github.com/steele123/marauder"
 description = "A utility library for hacking/reading memory of processes/games."
 categories = ["games"]
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [dependencies]
-mem-macros = { path = "../marauder-macros", optional = true, version = "0.1.0" }
+marauder-macros = { path = "../macros", optional = true, version = "0.1.0" }
 thiserror = "1.0.50"
 
 [dependencies.windows]
@@ -50,7 +50,7 @@ d3d11 = []
 d3d12 = []
 opengl = []
 vulkan = []
-macros = ["mem-macros"]
+macros = ["marauder-macros"]
 
 [[example]]
 name = "tokio_dll"

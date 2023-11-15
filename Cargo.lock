@@ -100,14 +100,14 @@ dependencies = [
 name = "marauder"
 version = "0.1.0"
 dependencies = [
- "mem-macros",
+ "marauder-macros",
  "thiserror",
  "tokio",
  "windows",
 ]
 
 [[package]]
-name = "mem-macros"
+name = "marauder-macros"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",
