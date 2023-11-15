@@ -13,7 +13,7 @@ use crate::{
     },
 };
 
-//// This will convert a pointer to a string into a string.
+/// This will convert a pointer to a string into a string.
 /// # Errors
 /// `std::ffi::Error` if an error occurs.
 pub fn convert_windows_string<'a, const N: usize>(string: [CHAR; N]) -> Result<&'a str, Error> {
