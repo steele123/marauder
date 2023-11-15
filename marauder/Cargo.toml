@@ -7,6 +7,7 @@ readme = "../README.md"
 repository = "https://github.com/steele123/marauder"
 description = "A utility library for hacking/reading memory of processes/games."
 categories = ["games"]
+license = "MIT"
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [dependencies]

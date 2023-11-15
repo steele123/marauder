@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2018"
 repository = "https://github.com/steele123/mem-rs"
 categories = ["games"]
+description = "A macro for generating DLLs for memory hacking"
+license = "MIT"
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [lib]
