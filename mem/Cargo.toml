@@ -1,7 +1,7 @@
 [package]
 name = "mem"
 version = "0.1.0"
-authors = ["Steele Scott <scott.2675@buckeyemail.osu.edu>", "Tyler Hill <tyler@oxide.fi>"]
+authors = ["Steele Scott <steele@catlab.gg>", "Tyler Hill <tyler@oxide.fi>"]
 edition = "2018"
 readme = "README.md"
 description = "A utility library for hacking/reading memory of processes/games."
