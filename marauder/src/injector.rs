@@ -56,6 +56,7 @@ pub struct Config {
 }
 
 impl Config {
+    /*
     const fn max_stealth() -> Self {
         Self {
             injection_method: InjectionMethod::ManualMap,
@@ -64,7 +65,7 @@ impl Config {
             randomize_file_name: true,
             pe_cloaking: PECloaking::Fake,
         }
-    }
+    }*/
 }
 
 impl Default for Config {
@@ -90,22 +91,25 @@ impl Injector {
     /// # Errors
     pub fn inject(&self, process_id: u32, dll_path: &str) -> Result<(), Error> {
         let load_lib_address = get_proc_address(get_module_handle("Kernel32.dll")?, "LoadLibraryA")?;
-
         let dll_path_size = dll_path.as_bytes().len();
-
         let process_handle = open_process(PROCESS_ALL_ACCESS, false, process_id);
-
         let path = virtual_alloc_ex(process_handle, None, dll_path_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE)?;
 
-        write_process_memory(process_handle, path, dll_path.as_ptr() as LPVOID, dll_path_size, None)?;
+        match self.config.execution_method {
+            CodeExecutionMethod::CreateRemoteThread => {
+                write_process_memory(process_handle, path, dll_path.as_ptr() as LPVOID, dll_path_size, None)?;
+                let thread_handle = unsafe {
+                    type StartRoutine = extern "system" fn(LPVOID) -> DWORD;
+                    let start_routine: StartRoutine = std::mem::transmute(load_lib_address);
+                    create_remote_thread(process_handle, None, 0, Some(start_routine), Some(path), 0, None)?
+                };
 
-        let thread_handle = unsafe {
-            type StartRoutine = extern "system" fn(LPVOID) -> DWORD;
-            let start_routine: StartRoutine = std::mem::transmute(load_lib_address);
-            create_remote_thread(process_handle, None, 0, Some(start_routine), Some(path), 0, None)?
-        };
-
-        close_handle(thread_handle)?;
+                close_handle(thread_handle)?;
+            }
+            CodeExecutionMethod::ThreadHijack => {
+                todo!()
+            }
+        }
 
         Ok(())
     }

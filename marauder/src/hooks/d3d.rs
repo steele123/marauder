@@ -3,7 +3,7 @@ use std::{
     ptr::{null, null_mut},
 };
 
-use bindings::Windows::Win32::{
+use windows::Win32::{
     Foundation::HWND,
     Graphics::{
         Direct3D10::{D3D10CreateDeviceAndSwapChain, D3D10_DRIVER_TYPE_HARDWARE, D3D10_SDK_VERSION},

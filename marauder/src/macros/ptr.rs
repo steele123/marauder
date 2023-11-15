@@ -44,7 +44,7 @@ macro_rules! make_fn {
 /// Makes a function with a pointer that has no return type.
 ///
 /// # Safety:
-/// This function is very unsafe extremely unsafe due to the use of
+/// This function is extremely unsafe due to the use of
 /// `std::marauder::transmute`. Make sure you know what you are doing so you don't
 /// get a access violation which will crash your process.
 ///
