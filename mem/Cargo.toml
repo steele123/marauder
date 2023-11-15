@@ -8,7 +8,7 @@ description = "A utility library for hacking/reading memory of processes/games."
 
 [dependencies]
 mem-macros = { path = "../mem-macros", optional = true }
-thiserror = "1.0.30"
+thiserror = "1.0.50"
 
 [dependencies.windows]
 version = "0.29.0"
