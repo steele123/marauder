@@ -10,7 +10,7 @@ categories = ["games"]
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [dependencies]
-mem-macros = { path = "../mem-macros", optional = true }
+mem-macros = { path = "../mem-macros", optional = true, version = "0.1.0" }
 thiserror = "1.0.50"
 
 [dependencies.windows]
