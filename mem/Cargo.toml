@@ -6,6 +6,8 @@ edition = "2018"
 readme = "../README.md"
 repository = "https://github.com/steele123/mem-rs"
 description = "A utility library for hacking/reading memory of processes/games."
+categories = ["games"]
+keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [dependencies]
 mem-macros = { path = "../mem-macros", optional = true }

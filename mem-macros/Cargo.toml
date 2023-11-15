@@ -3,6 +3,8 @@ name = "mem-macros"
 version = "0.1.0"
 edition = "2018"
 repository = "https://github.com/steele123/mem-rs"
+categories = ["games"]
+keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [lib]
 proc-macro = true
