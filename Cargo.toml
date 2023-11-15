@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "mem",
-    "mem-macros"
+    "marauder",
+    "marauder-macros"
 ]

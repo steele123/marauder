@@ -62,7 +62,7 @@ pub fn get_method_table(render_type: RenderType) -> Result<Vec<MethodTable>> {
         hCursor: Default::default(),
         hbrBackground: Default::default(),
         lpszMenuName: Default::default(),
-        lpszClassName: "mem".into(),
+        lpszClassName: "marauder".into(),
         hIconSm: Default::default(),
     };
 

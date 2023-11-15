@@ -60,7 +60,7 @@ impl Mem {
             self.process,
             relative_value_address as LPVOID,
             (output as *const T) as LPVOID,
-            std::mem::size_of::<T>() as usize,
+            std::marauder::size_of::<T>() as usize,
             &mut bytes_written,
         )?;
 
@@ -75,13 +75,13 @@ impl Mem {
             pointer
         };
 
-        let mut buffer: T = unsafe { std::mem::zeroed() };
+        let mut buffer: T = unsafe { std::marauder::zeroed() };
 
         read_process_memory(
             self.process,
             relative_value_address as LPCVOID,
             (&mut buffer as *mut T).cast::<std::ffi::c_void>(),
-            std::mem::size_of::<T>(),
+            std::marauder::size_of::<T>(),
             std::ptr::null_mut::<size_t>(),
         );
 

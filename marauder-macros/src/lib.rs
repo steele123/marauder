@@ -74,7 +74,7 @@ fn create_main(mut input: ItemFn, _: AttributeArgs, is_async: bool) -> Result<To
     // Only reason I decided to use quote! to parse this is because working with
     // input.sig.input is way more confusing than it should be
     // TODO: We probably want to make the type of the params of this function from
-    //  our mem library's types
+    //  our marauder library's types
     input.sig =
         syn::parse2(quote! {extern "system" fn DllMain(module_handle: mem::windows::wrappers::HandleInstance, dw_reason: std::os::raw::c_ulong, lp_reserved: *mut std::ffi::c_void) -> bool})
             .unwrap();

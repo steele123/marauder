@@ -45,7 +45,7 @@ macro_rules! make_fn {
 ///
 /// # Safety:
 /// This function is very unsafe extremely unsafe due to the use of
-/// `std::mem::transmute`. Make sure you know what you are doing so you don't
+/// `std::marauder::transmute`. Make sure you know what you are doing so you don't
 /// get a access violation which will crash your process.
 ///
 /// # Example:
@@ -64,7 +64,7 @@ macro_rules! make_fn {
 /// ```
 ///
 /// ```rust
-/// use mem::make_void;
+/// use marauder::make_void;
 /// // Target 1
 /// let hello_world = make_void!(0x1337, &str);
 /// // Target 2, this is the same as using make_fn!(0x6969);

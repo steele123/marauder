@@ -3,7 +3,7 @@
 // Basically your fn main is injected inside of a extern "system" DllMain
 // function inside of a new thread this is nearly identical to our sample_dll
 // example except just requires less boilerplate
-#[mem::dll_main]
+#[marauder::dll_main]
 fn main() {
     // module_handle is exposed from our macro, so is dw_reason, and also
     // lp_reserved

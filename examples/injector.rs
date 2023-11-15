@@ -1,4 +1,4 @@
-use mem::{
+use marauder::{
     injector::{Config, Injector},
     windows::utils::get_process_id,
 };

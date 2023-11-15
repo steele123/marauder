@@ -48,12 +48,16 @@ impl GraphicsHook {
             },
         };
 
-        Ok(GraphicsHook)
+        unimplemented!()
     }
 
     // TODO: DOC
-    pub fn hook(index: u16) -> Result<()> {}
+    pub fn hook(index: u16) -> Result<()> {
+        unimplemented!()
+    }
 
     // TODO: DOC
-    pub fn unhook() -> Result<()> {}
+    pub fn unhook() -> Result<()> {
+        unimplemented!()
+    }
 }

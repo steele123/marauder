@@ -1,5 +1,5 @@
 [package]
-name = "mem"
+name = "marauder"
 version = "0.1.0"
 authors = ["Steele Scott <steele@catlab.gg>", "Tyler Hill <tyler@oxide.fi>"]
 edition = "2018"
@@ -10,7 +10,7 @@ categories = ["games"]
 keywords = ["memory", "cheat", "hack", "dll", "injection"]
 
 [dependencies]
-mem-macros = { path = "../mem-macros", optional = true, version = "0.1.0" }
+mem-macros = { path = "../marauder-macros", optional = true, version = "0.1.0" }
 thiserror = "1.0.50"
 
 [dependencies.windows]
@@ -36,7 +36,7 @@ features = [
 ]
 
 [dev-dependencies]
-tokio = { version = "1.15.0", features = ["full"] }
+tokio = { version = "1.34.0", features = ["full"] }
 
 [features]
 default = ["full"]
